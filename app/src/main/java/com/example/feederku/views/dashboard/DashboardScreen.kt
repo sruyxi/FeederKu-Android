@@ -1,4 +1,4 @@
-package com.example.feederku.views.signup
+package com.example.feederku.views.dashboard
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,9 +8,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun SignUp(modifier: Modifier = Modifier){
-    Box(modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center) {
-        Text("SignUp Feederku")
+fun DashboardScreen(modifier: Modifier = Modifier){
+    Box( modifier = Modifier
+        .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ){
+        Text("Dashboard Feederku")
     }
 }
