@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.feederku.ui.theme.DMSans
 import com.example.feederku.ui.theme.FeederkuTheme
 import com.example.feederku.ui.theme.textBrown
 import com.example.feederku.views.auth.AuthViewModel
@@ -103,12 +104,14 @@ fun LoginScreen(
             text = "Welcome Back!",
             fontSize = 22.sp,
             fontWeight = FontWeight.ExtraBold,
-            color = textBrown
+            color = textBrown,
+            fontFamily = DMSans
         )
         Text(
             text = "Login to check your local animal alerts",
             fontSize = 12.sp,
-            color = textBrown
+            color = textBrown,
+            fontFamily = DMSans
         )
         Spacer(Modifier.height(20.dp))
 

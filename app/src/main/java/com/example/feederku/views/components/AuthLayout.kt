@@ -25,7 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.feederku.ui.theme.DMSans
 import com.example.feederku.ui.theme.creamBackground
+import com.example.feederku.ui.theme.headerFooter
 import com.example.feederku.ui.theme.textBrown
 
 //Kerangka layar: header coklat, area content, dan footer
@@ -73,7 +75,7 @@ fun AuthHeader(onBackClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                color = textBrown
+                color = headerFooter
             )
             .statusBarsPadding() //supaya coklat tetap sampai ke belakang status bar
             .height(72.dp)
@@ -91,9 +93,10 @@ fun AuthHeader(onBackClick: () -> Unit) {
         }
         Text(
             text = "Feederku",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
+            fontFamily = DMSans,
+            fontSize = 25.sp,
             color = creamBackground,
+            fontWeight = FontWeight.ExtraBold,
             modifier = Modifier.align(Alignment.Center)
         )
     }

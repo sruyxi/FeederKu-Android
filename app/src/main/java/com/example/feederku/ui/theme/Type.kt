@@ -1,7 +1,9 @@
 package com.example.feederku.ui.theme
 
+import com.example.feederku.R
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -31,4 +33,15 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     )
     */
+)
+
+val DMSans = FontFamily(
+    Font(
+        R.font.dm_sans_regular,
+        FontWeight.Normal
+    ),
+    Font(
+        R.font.dm_sans_bold,
+        FontWeight.Bold
+    )
 )

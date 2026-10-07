@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.feederku.ui.theme.DMSans
 import com.example.feederku.ui.theme.FeederkuTheme
 import com.example.feederku.ui.theme.buttonGreen
 import com.example.feederku.ui.theme.creamBackground
@@ -114,7 +115,8 @@ private fun OnBoardingFooter(
         Text(
             text = "$currentPage out of ${OnBoardingUiState.TOTAL_PAGES}",
             fontSize = 12.sp,
-            color = textBrown
+            color = textBrown,
+            fontFamily = DMSans
         )
         Button(
             onClick = onNext,
@@ -135,7 +137,8 @@ private fun OnBoardingFooter(
                         else -> "Let's Go"
                     },
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = DMSans
                 )
                 if (!isLastPage) {
                     Spacer(Modifier.width(8.dp))

@@ -9,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.feederku.views.auth.pages.LoginRoute
 import com.example.feederku.views.auth.pages.SignUpRoute
 import com.example.feederku.views.auth.pages.WelcomeScreen
-import com.example.feederku.views.dashboard.DashboardScreen
+import com.example.feederku.views.dashboard.DashboardRoute
 import com.example.feederku.views.onboarding.OnBoardingRoute
 
 //pengatur layar
@@ -55,7 +55,9 @@ fun AppNavHost(
                     navController.popBackStack()
                 },
                 onLoginClick = {
-                    navController.navigate(Routes.Login.route)
+                    navController.navigate(Routes.Login.route){
+                        popUpTo(Routes.SignUp.route) { inclusive = true }
+                    }
                 }
             )
         }
@@ -73,7 +75,7 @@ fun AppNavHost(
         }
         
         composable(Routes.Dashboard.route){
-            DashboardScreen()
+            DashboardRoute()
         }
     }
 }

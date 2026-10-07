@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.feederku.R
+import com.example.feederku.ui.theme.DMSans
 import com.example.feederku.ui.theme.FeederkuTheme
 import com.example.feederku.ui.theme.boxFitur
 import com.example.feederku.ui.theme.boxIcon
@@ -75,13 +76,14 @@ fun OnBoardingScreen1 (
                     text = "Feederku",
                     fontSize = 36.sp,
                     fontWeight = FontWeight.ExtraBold,
-                    fontFamily = FontFamily.Default,
+                    fontFamily = DMSans,
                     color = textBrown,
                     modifier = Modifier.align(Alignment.Center)
                 )
                 Text(
                     text = "Skip",
                     fontSize = 12.sp,
+                    fontFamily = DMSans,
                     fontWeight = FontWeight.ExtraBold,
                     color = skipOnclick,
                     textDecoration = TextDecoration.Underline,
@@ -96,7 +98,7 @@ fun OnBoardingScreen1 (
                 text = "Help Stray Cats Around You!",
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Default,
+                fontFamily = DMSans,
                 color = textBrown,
                 modifier = Modifier.padding(top = 15.dp)
             )

@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.feederku.ui.theme.DMSans
 import com.example.feederku.ui.theme.creamBackground
 import com.example.feederku.ui.theme.textBrown
 
@@ -69,9 +70,9 @@ fun OnBoardingImagePage(
                 text = "Feed Strays Near You",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.ExtraBold,
-                fontFamily = FontFamily.Default,
+                fontFamily = DMSans,
                 color = textBrown,
-                modifier = Modifier.padding(top = 10.dp)
+                modifier = Modifier.padding(top = 10.dp),
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
@@ -79,7 +80,7 @@ fun OnBoardingImagePage(
                         "fellow cat lovers to make sure no stary cats " +
                         "goes hungry tonight",
                 fontSize = 12.sp,
-                fontFamily = FontFamily.Default,
+                fontFamily = DMSans,
                 color = textBrown,
                 modifier = Modifier
                     .padding(horizontal = 70.dp),

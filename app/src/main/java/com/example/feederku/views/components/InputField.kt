@@ -48,7 +48,7 @@ fun InputField(
     Column(
         modifier = modifier.fillMaxWidth()
     ){
-        Text(
+        Text( // Atur tulisan Full Name, Email Address, dan Password
             text = label,
             fontSize = 13.sp,
             fontWeight = FontWeight.Bold,

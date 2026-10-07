@@ -1,5 +1,6 @@
 package com.example.feederku.views.auth.pages
 
+import android.R.attr.contentDescription
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.feederku.ui.theme.FeederkuTheme
+import com.example.feederku.ui.theme.boxFitur
 import com.example.feederku.ui.theme.buttonGreen
 import com.example.feederku.ui.theme.creamBackground
 import com.example.feederku.ui.theme.textBrown
@@ -47,54 +49,62 @@ fun WelcomeScreen(
             .padding(horizontal = 32.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        Spacer(Modifier.weight(0.9f))
-        Image(
-            painter = painterResource(id = com.example.feederku.R.drawable.logo_feederku),
-            contentDescription = "Feederku logo",
-            modifier = Modifier.size(280.dp)
-        )
-        Text(
-            text = "Feederku",
-            fontSize = 40.sp,
-            fontFamily = FontFamily.Default,
-            fontWeight = FontWeight.ExtraBold,
-            color = textBrown
-        )
-        Text(
-            text = "Help Stray Cats Around You!",
-            fontSize = 12.sp,
-            fontFamily = FontFamily.Default,
-            color = textBrown
-        )
-        Spacer(Modifier.weight(1f))
-
-        MainButton(
-            text = "Sign Up",
-            onClick = onSignUpClick
-        )
-        Text(
-            text = "Or",
-            fontSize = 11.sp,
-            color = textBrown,
-            modifier = Modifier.padding(vertical = 6.dp)
-        )
-        OutlinedButton(
-            onClick = onLoginClick,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp),
-            shape = RoundedCornerShape(26.dp),
-            border = BorderStroke(1.dp, buttonGreen),
-            colors = ButtonDefaults.outlinedButtonColors(
-                containerColor = Color.White
+        Column(
+            modifier = Modifier.padding(top = 90.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = com.example.feederku.R.drawable.logo_feederku),
+                contentDescription = "Feederku logo",
+                modifier = Modifier.size(280.dp)
             )
-        ){
             Text(
-                text = "Login",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = buttonGreen
+                text = "Feederku",
+                fontSize = 40.sp,
+                fontFamily = FontFamily.Default,
+                fontWeight = FontWeight.ExtraBold,
+                color = textBrown
             )
+            Text(
+                text = "Help Stray Cats Around You!",
+                fontSize = 12.sp,
+                fontFamily = FontFamily.Default,
+                color = textBrown
+            )
+        }
+
+        Column(
+            modifier = Modifier.padding(top = 70.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            MainButton(
+                text = "Sign Up",
+                onClick = onSignUpClick
+            )
+            Text(
+                text = "Or",
+                fontSize = 11.sp,
+                color = textBrown,
+                modifier = Modifier.padding(vertical = 6.dp)
+            )
+            OutlinedButton(
+                onClick = onLoginClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                shape = RoundedCornerShape(26.dp),
+                border = BorderStroke(1.dp, buttonGreen),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    containerColor = boxFitur
+                )
+            ) {
+                Text(
+                    text = "Login",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = buttonGreen
+                )
+            }
         }
     }
 }

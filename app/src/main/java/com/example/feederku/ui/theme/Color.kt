@@ -16,3 +16,19 @@ val boxFitur = Color(0xFFF0EAD8)
 val boxIcon = Color(0xFFE6DDC8)
 val buttonGreen = Color(0xFF74B567)
 val skipOnclick = Color(0xFF74B567)
+
+val ColorTimber = Color(0xFF3A2E26)   // Heading / Nav Background
+
+val ColorLinenWarm = Color(0xFFF0EAD8) // Card BG / Highlight
+
+val ColorJungle = Color(0xFF5CB85C)    // CTA Button Green
+
+val ColorFogCream = Color(0xFFFAF6EE)  // Page BG
+
+val cardLinen = Color(0xFFF06AD8)
+val liveRed = Color(0xFFE05555)
+val greenDark = Color(0xFF2E7D32)
+
+val searchBar = Color (0xFFF0EAD8)
+
+val headerFooter = Color (0xFF3A2E26)
