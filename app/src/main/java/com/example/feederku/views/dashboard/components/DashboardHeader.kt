@@ -1,6 +1,7 @@
 package com.example.feederku.views.dashboard.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,6 +37,7 @@ fun DashboardHeader(
     userName: String,
     userTitle: String,
     onAddClick: () -> Unit,
+    onProfileClick: () -> Unit,
     modifier: Modifier = Modifier
 ){
     Row(
@@ -51,7 +53,11 @@ fun DashboardHeader(
         horizontalArrangement = Arrangement.SpaceBetween
     ){
         // Bagian Icon Foto + Nama + Title
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier.clickable {
+                onProfileClick()
+            },
+            verticalAlignment = Alignment.CenterVertically) {
             ImagePlaceholder(
                imageRes = R.drawable.profile_circle,
                 modifier = Modifier

@@ -11,6 +11,7 @@ import com.example.feederku.views.auth.pages.SignUpRoute
 import com.example.feederku.views.auth.pages.WelcomeScreen
 import com.example.feederku.views.dashboard.DashboardRoute
 import com.example.feederku.views.onboarding.OnBoardingRoute
+import com.example.feederku.views.profile.ProfileScreen
 
 //pengatur layar
 @Composable
@@ -75,7 +76,22 @@ fun AppNavHost(
         }
         
         composable(Routes.Dashboard.route){
-            DashboardRoute()
+            DashboardRoute(
+                onProfileClick = {
+                    navController.navigate(Routes.Profile.route)
+                }
+            )
+        }
+
+        composable(Routes.Profile.route){
+            ProfileScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onSettingsClick = {
+
+                }
+            )
         }
     }
 }

@@ -11,6 +11,7 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val creamBackground = Color(0xFFFAF6EF)
+
 val textBrown = Color(0xFF5A4033)
 val boxFitur = Color(0xFFF0EAD8)
 val boxIcon = Color(0xFFE6DDC8)
@@ -32,3 +33,5 @@ val greenDark = Color(0xFF2E7D32)
 val searchBar = Color (0xFFF0EAD8)
 
 val headerFooter = Color (0xFF3A2E26)
+
+val cardProfile = Color (0xFFEFEADA)

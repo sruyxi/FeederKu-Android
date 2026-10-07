@@ -34,6 +34,7 @@ import com.example.feederku.views.dashboard.model.LiveStream
 import androidx.compose.runtime.getValue
 import androidx.compose.foundation.lazy.items
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.rememberNavController
 import com.example.feederku.ui.theme.DMSans
 
 @Composable
@@ -44,6 +45,7 @@ fun DashboardRoute(
     onSeeAllClick: () -> Unit = {},
     onLiveStreamClick: (LiveStream) -> Unit = {},
     onPostMenuClick: (FeedPost) -> Unit = {},
+    onProfileClick: () -> Unit = {},
     viewModel: DashboardViewModel = viewModel(factory = DashboardViewModel.Factory)
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -57,6 +59,7 @@ fun DashboardRoute(
         onSeeAllClick = onSeeAllClick,
         onLiveStreamClick = onLiveStreamClick,
         onPostMenuClick = onPostMenuClick,
+        onProfileClick = onProfileClick,
         modifier = modifier
     )
 }
@@ -72,6 +75,7 @@ fun DashboardScreen(
     onSeeAllClick: () -> Unit,
     onLiveStreamClick: (LiveStream) -> Unit,
     onPostMenuClick: (FeedPost) -> Unit,
+    onProfileClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -81,7 +85,8 @@ fun DashboardScreen(
             DashboardHeader(
                 userName = uiState.userName,
                 userTitle = uiState.userTitle,
-                onAddClick = onAddClick
+                onAddClick = {},
+                onProfileClick = onProfileClick
             )
         },
         bottomBar = {
@@ -198,9 +203,15 @@ private fun DashboardScreenPreview(){
                 impactStats = data.impactStats,
                 feedPosts = data.feedPosts
             ),
-            onSearchQueryChange = {}, onTabSelected = {}, onRetry = {},
-            onAddClick = {}, onGoLiveClick = {}, onSeeAllClick = {},
-            onLiveStreamClick = {}, onPostMenuClick = {}
+            onSearchQueryChange = {},
+            onTabSelected = {},
+            onRetry = {},
+            onAddClick = {},
+            onGoLiveClick = {},
+            onSeeAllClick = {},
+            onLiveStreamClick = {},
+            onPostMenuClick = {},
+            onProfileClick = {}
         )
     }
 }
