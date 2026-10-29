@@ -57,7 +57,6 @@ class DashboardViewModel(
 
     fun onSearchQueryChange(value: String){
         _uiState.update { it.copy(searchQuery = value) }
-        // TODO(BACKEND): GET /locations/search?q=...
     }
 
     fun onTabSelected(tab: DashboardTab){

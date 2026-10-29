@@ -1,4 +1,4 @@
-package com.example.feederku.views.onboarding.pages
+package com.example.feederku.views.onboarding.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

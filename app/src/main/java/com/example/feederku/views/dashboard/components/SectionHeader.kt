@@ -1,7 +1,5 @@
 package com.example.feederku.views.dashboard.components
 
-import android.R.attr.fontWeight
-import android.R.attr.text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -20,8 +18,7 @@ import com.example.feederku.ui.theme.textBrown
 fun SectionHeader(
     title: String,
     modifier: Modifier = Modifier,
-    actionText: String? = null,
-    onActionClick: () -> Unit = {}
+    onSeeAllClick: (() -> Unit)? = null
 ){
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -30,19 +27,19 @@ fun SectionHeader(
     ){
         Text(
             text = title,
-            fontSize = 17.sp,
+            fontSize = 16.sp,
             fontWeight = FontWeight.ExtraBold,
             color = textBrown,
             fontFamily = DMSans
         )
-        if(actionText != null){
+        if(onSeeAllClick != null){
             Text(
-                text = actionText,
-                fontSize = 13.sp,
+                text = "See All",
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
                 color = greenDark,
-                modifier = Modifier.clickable(onClick = onActionClick),
-                fontFamily = DMSans
+                fontFamily = DMSans,
+                modifier = Modifier.clickable { onSeeAllClick() }
             )
         }
     }

@@ -1,16 +1,19 @@
-package com.example.feederku.views.components
+package com.example.feederku.ui.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -40,7 +43,8 @@ fun InputField(
     isPassword: Boolean = false,
     errorMessage: String? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
-    imeAction: ImeAction = ImeAction.Next
+    imeAction: ImeAction = ImeAction.Next,
+    onImeAction: () -> Unit = {}
 ){
     //State sesaat (lihat atau sembunyikan password)
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
@@ -55,33 +59,34 @@ fun InputField(
             color = textBrown
         )
         Spacer(Modifier.height(6.dp))
+
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text(placeholder, fontSize = 13.sp) },
             singleLine = true,
-            isError = errorMessage != null,
-            supportingText = { if (errorMessage != null) Text(errorMessage) },
+            enabled = true,
+            readOnly = false,
             visualTransformation =
                 if (isPassword && !passwordVisible) PasswordVisualTransformation()
                     else VisualTransformation.None,
-            trailingIcon = {
-                if (isPassword){
+            trailingIcon = if (isPassword){
+                {
+                    val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
                     IconButton(onClick = { passwordVisible = !passwordVisible }){
-                        Icon(
-                            imageVector = if (passwordVisible) Icons.Default.VisibilityOff
-                                else Icons.Default.Visibility,
-                            contentDescription = if (passwordVisible) "Sembunyikan password"
-                                else "Tampilkan password"
-                        )
+                        Icon(imageVector = image, contentDescription =
+                            if(passwordVisible) "Hide password" else "Show password")
                     }
                 }
-            },
+            } else null,
             keyboardOptions = KeyboardOptions(
                 keyboardType = if (isPassword) KeyboardType.Password
                 else keyboardType,
                 imeAction = imeAction
+            ),
+            keyboardActions = KeyboardActions(
+                onAny = { onImeAction() }
             ),
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
@@ -94,5 +99,14 @@ fun InputField(
                 unfocusedPlaceholderColor = textBrown.copy(alpha = 0.4f)
             )
         )
+
+        if (errorMessage != null) {
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                fontSize = 11.sp,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
     }
 }

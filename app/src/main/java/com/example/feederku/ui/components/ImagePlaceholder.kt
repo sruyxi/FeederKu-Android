@@ -1,4 +1,4 @@
-package com.example.feederku.views.dashboard.components
+package com.example.feederku.ui.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image

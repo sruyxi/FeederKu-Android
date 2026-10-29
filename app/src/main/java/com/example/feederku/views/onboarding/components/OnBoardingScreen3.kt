@@ -1,4 +1,4 @@
-package com.example.feederku.views.onboarding.pages
+package com.example.feederku.views.onboarding.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -7,23 +7,22 @@ import com.example.feederku.R
 import com.example.feederku.ui.theme.FeederkuTheme
 
 @Composable
-fun OnBoardingScreen2 (
+fun OnBoardingScreen3 (
     modifier: Modifier = Modifier
 ) {
     OnBoardingImagePage(
-        imageRes = R.drawable.ellipse_1,
-        title = "Feed Strays Near You",
-        description = "Locate feeding points and coordinates with fellow " +
-                "cat lovers" + "to make sure no stray cats go hungry tonight",
+        imageRes = R.drawable.ellipse_2,
+        title = "Join the community",
+        description = "Connect with certified shelters, join " +
+                "localized chat groups, " + "and share verified updates about rescues",
         modifier = modifier
     )
 }
 
-
 @Preview(showBackground = true)
 @Composable
-private fun OnBoarding2Preview() {
+fun OnBoarding3Preview() {
     FeederkuTheme {
-        OnBoardingScreen2()
+        OnBoardingScreen3()
     }
 }

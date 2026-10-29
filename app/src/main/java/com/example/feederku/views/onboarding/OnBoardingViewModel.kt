@@ -25,4 +25,10 @@ class OnBoardingViewModel : ViewModel() {
             else state.copy(currentPage = state.currentPage + 1)
         }
     }
+
+    fun onPageSwiped(page: Int) {
+        _uiState.update { state ->
+            state.copy(currentPage = page)
+        }
+    }
 }

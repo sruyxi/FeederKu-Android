@@ -1,4 +1,4 @@
-package com.example.feederku.views.auth
+package com.example.feederku.data.remote
 
 import android.content.Context
 import androidx.credentials.CredentialManager

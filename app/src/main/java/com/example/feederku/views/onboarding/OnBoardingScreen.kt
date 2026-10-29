@@ -13,8 +13,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -23,6 +26,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,9 +42,9 @@ import com.example.feederku.ui.theme.FeederkuTheme
 import com.example.feederku.ui.theme.buttonGreen
 import com.example.feederku.ui.theme.creamBackground
 import com.example.feederku.ui.theme.textBrown
-import com.example.feederku.views.onboarding.pages.OnBoardingScreen1
-import com.example.feederku.views.onboarding.pages.OnBoardingScreen2
-import com.example.feederku.views.onboarding.pages.OnBoardingScreen3
+import com.example.feederku.views.onboarding.components.OnBoardingScreen1
+import com.example.feederku.views.onboarding.components.OnBoardingScreen2
+import com.example.feederku.views.onboarding.components.OnBoardingScreen3
 
 @Composable
 fun OnBoardingRoute(
@@ -56,6 +60,9 @@ fun OnBoardingRoute(
             if(uiState.isLastPage) onFinish() // "Let's Go"
             else viewModel.onNextClicked() // ganti "Get Started" / "Next"
         },
+        onPageSwiped = { page ->
+            viewModel.onPageSwiped(page)
+        },
         modifier = modifier
     )
 }
@@ -64,29 +71,43 @@ fun OnBoardingScreen(
     uiState: OnBoardingUiState,
     onSkip: () -> Unit,
     onNext: () -> Unit,
+    onPageSwiped: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val pagerState = rememberPagerState(
+        initialPage = (uiState.currentPage - 1).coerceAtLeast(0), //supaya batas minimum nya 0
+        pageCount = { OnBoardingUiState.TOTAL_PAGES }
+    )
+
+    //Deteksi swipe manual dari pengguna -> Update ViewModel
+    LaunchedEffect(pagerState.currentPage) {
+        onPageSwiped(pagerState.currentPage + 1)
+    }
+
+    //Deteksi klik tombol Next dari ViewModel -> Pindahkan animasi Pager
+    LaunchedEffect(uiState.currentPage){
+        val targetIndex = uiState.currentPage - 1
+        if (pagerState.currentPage != targetIndex && targetIndex in 0 until OnBoardingUiState.TOTAL_PAGES) {
+            pagerState.animateScrollToPage(targetIndex)
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(creamBackground)
     ) {
         // Halaman OnBoarding (Screen 1, 2, 3)
-        Box(
+        HorizontalPager(
+            state = pagerState,
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
-        ) {
-            AnimatedContent(
-                targetState = uiState.currentPage,
-                transitionSpec = { fadeIn() togetherWith fadeOut() },
-                label = "PageTransition"
-            ) { page ->
-                when (page) {
-                    1 -> OnBoardingScreen1(onSkip = onSkip)
-                    2 -> OnBoardingScreen2()
-                    else -> OnBoardingScreen3()
-                }
+        ) { pageIndex ->
+            when (pageIndex + 1){
+                1 -> OnBoardingScreen1(onSkip = onSkip)
+                2 -> OnBoardingScreen2()
+                else -> OnBoardingScreen3()
             }
         }
 
@@ -108,9 +129,10 @@ private fun OnBoardingFooter(
     Column(
         modifier = modifier
             .fillMaxWidth()
+            .navigationBarsPadding()
             .padding(horizontal = 20.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         Text(
             text = "$currentPage out of ${OnBoardingUiState.TOTAL_PAGES}",
@@ -152,17 +174,17 @@ private fun OnBoardingFooter(
 @Preview(name = "Page 1", showBackground = true, showSystemUi = true)
 @Composable
 private fun OnBoardingPage1Preview() {
-    FeederkuTheme { OnBoardingScreen(OnBoardingUiState(currentPage = 1), onSkip = {}, onNext = {}) }
+    FeederkuTheme { OnBoardingScreen(OnBoardingUiState(currentPage = 1), onSkip = {}, onNext = {}, onPageSwiped = {}) }
 }
 
 @Preview(name = "Page 2", showBackground = true, showSystemUi = true)
 @Composable
 private fun OnBoardingPage2Preview() {
-    FeederkuTheme { OnBoardingScreen(OnBoardingUiState(currentPage = 2), onSkip = {}, onNext = {}) }
+    FeederkuTheme { OnBoardingScreen(OnBoardingUiState(currentPage = 2), onSkip = {}, onNext = {}, onPageSwiped = {}) }
 }
 
 @Preview(name = "Page 3", showBackground = true, showSystemUi = true)
 @Composable
 private fun OnBoardingPage3Preview() {
-    FeederkuTheme { OnBoardingScreen(OnBoardingUiState(currentPage = 3), onSkip = {}, onNext = {}) }
+    FeederkuTheme { OnBoardingScreen(OnBoardingUiState(currentPage = 3), onSkip = {}, onNext = {}, onPageSwiped = {}) }
 }

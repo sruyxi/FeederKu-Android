@@ -27,10 +27,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.feederku.R
+import com.example.feederku.ui.components.ImagePlaceholder
 import com.example.feederku.ui.theme.DMSans
 import com.example.feederku.ui.theme.buttonGreen
 import com.example.feederku.ui.theme.headerFooter
-import com.example.feederku.ui.theme.textBrown
 
 @Composable
 fun DashboardHeader(
@@ -59,7 +59,7 @@ fun DashboardHeader(
             },
             verticalAlignment = Alignment.CenterVertically) {
             ImagePlaceholder(
-               imageRes = R.drawable.profile_circle,
+                imageRes = R.drawable.profile_circle,
                 modifier = Modifier
                     .size(48.dp)
                     .clip(CircleShape)

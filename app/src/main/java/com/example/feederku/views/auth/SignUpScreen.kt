@@ -1,10 +1,10 @@
-package com.example.feederku.views.auth.pages
+package com.example.feederku.views.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,51 +15,54 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.feederku.ui.theme.DMSans
-import com.example.feederku.ui.theme.FeederkuTheme
 import com.example.feederku.ui.theme.textBrown
-import com.example.feederku.views.auth.AuthViewModel
-import com.example.feederku.views.auth.getGoogleIdToken
+import com.example.feederku.data.remote.getGoogleIdToken
 import com.example.feederku.views.auth.model.AuthUiState
-import com.example.feederku.views.components.AuthLayout
-import com.example.feederku.views.components.AuthSwitchText
-import com.example.feederku.views.components.InputField
-import com.example.feederku.views.components.MainButton
-import com.example.feederku.views.components.SocialLoginButtons
+import com.example.feederku.views.auth.components.AuthLayout
+import com.example.feederku.views.auth.components.AuthSwitchText
+import com.example.feederku.ui.components.InputField
+import com.example.feederku.views.auth.components.MainButton
+import com.example.feederku.views.auth.components.SocialLoginButtons
 import kotlinx.coroutines.launch
 
-
-//ROUTE
 @Composable
-fun LoginRoute(
-    onLoginSuccess: () -> Unit, //navigasi ke Home-Dashboard
+fun SignUpRoute(
+    onNavigateToLogin: () -> Unit,
     onBackClick: () -> Unit,
-    onSignUpClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: AuthViewModel = viewModel(factory = AuthViewModel.Factory)
-){
+    viewModel: AuthViewModel = viewModel(factory = AuthViewModel.Factory),
+    onLoginClick: () -> Unit
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(uiState.isAuthenticated){
-        if(uiState.isAuthenticated) onLoginSuccess()
+    LaunchedEffect(uiState.isSignUpSuccess){
+        if(uiState.isSignUpSuccess){
+            Toast.makeText( // ada tampilan pesan berhasil sebelum pindah ke halaman login
+                context,
+                "Akun berhasil dibuat! Silakan login.",
+                Toast.LENGTH_SHORT
+            ).show()
+            onNavigateToLogin() //pindah ke halaman login
+        }
     }
-    LoginScreen(
+
+    SignUpScreen(
         uiState = uiState,
+        onNameChange = viewModel::onNameChange,
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChange,
-        onLoginClick = viewModel::onLoginClick,
+        onSignUpClick = { viewModel.onSignUpClick() },
         onBackClick = onBackClick,
-        onSignUpClick = onSignUpClick,
+        onLoginClick = onLoginClick,
         onGoogleClick = {
             scope.launch {
-                getGoogleIdToken(context,)
+                getGoogleIdToken(context)
                     .onSuccess(viewModel::onGoogleIdToken)
                     .onFailure { viewModel.onGoogleError(it.message) }
             }
@@ -67,15 +70,16 @@ fun LoginRoute(
         modifier = modifier
     )
 }
-//SCREEN
+
 @Composable
-fun LoginScreen(
+fun SignUpScreen(
     uiState: AuthUiState,
+    onNameChange: (String) -> Unit,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
-    onLoginClick: () -> Unit,
-    onBackClick: () -> Unit,
     onSignUpClick: () -> Unit,
+    onBackClick: () -> Unit,
+    onLoginClick: () -> Unit,
     onGoogleClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -84,54 +88,53 @@ fun LoginScreen(
         modifier = modifier,
         bottomContent = {
             MainButton(
-                text = "Login",
-                onClick = onLoginClick,
-                enabled = uiState.canLogin,
+                text = "Sign Up",
+                onClick = onSignUpClick,
+                enabled = uiState.canSignUp,
                 isLoading = uiState.isLoading
             )
             SocialLoginButtons(
-                dividerText = "Or Login with",
+                dividerText = "Or Sign up with",
                 onGoogleClick = onGoogleClick
             )
             AuthSwitchText(
-                question = "Don't have an account?",
-                linkText = "Sign Up",
-                onLinkClick = onSignUpClick
+                question = "Already have an account?",
+                linkText = "Login",
+                onLinkClick = onLoginClick
             )
         }
     ) {
         Text(
-            text = "Welcome Back!",
+            text = "Create Account",
             fontSize = 22.sp,
             fontWeight = FontWeight.ExtraBold,
-            color = textBrown,
-            fontFamily = DMSans
+            color = textBrown
         )
         Text(
-            text = "Login to check your local animal alerts",
+            text = "Join FeederKu community and protect helpless stray cats.",
             fontSize = 12.sp,
-            color = textBrown,
-            fontFamily = DMSans
+            color = textBrown
         )
         Spacer(Modifier.height(20.dp))
 
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            //Input Email
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            InputField(
+                label = "Full Name",
+                value = uiState.name,
+                onValueChange = onNameChange,
+                placeholder = "e.g. Zayn Malik",
+                keyboardType = KeyboardType.Text
+            )
             InputField(
                 label = "Email Address",
                 value = uiState.email,
                 onValueChange = onEmailChange,
-                placeholder = "e.g. harry@example.com",
+                placeholder = "e.g. zayn@example.com",
                 keyboardType = KeyboardType.Email,
                 errorMessage = if (uiState.email.isNotEmpty() && !uiState.isEmailValid) {
                     "Format email tidak valid"
-                } else {
-                    null
-                }
+                } else null
             )
-
             InputField(
                 label = "Password",
                 value = uiState.password,
@@ -141,35 +144,6 @@ fun LoginScreen(
                 isPassword = true,
                 imeAction = ImeAction.Done
             )
-
-            uiState.errorMessage?.let { errorMsg ->
-                Text(
-                    text = errorMsg,
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.error
-                )
-            }
         }
     }
 }
-
-@Composable
-private fun LoginPreviewContent(state: AuthUiState) {
-    FeederkuTheme {
-        LoginScreen(
-            uiState = state,
-            onEmailChange = {}, onPasswordChange = {},
-            onLoginClick = {}, onBackClick = {}, onSignUpClick = {},
-            onGoogleClick = {}
-        )
-    }
-}
-
-@Preview(name = "Kosong", showBackground = true, showSystemUi = true)
-@Composable
-private fun LoginEmptyPreview() = LoginPreviewContent(AuthUiState())
-
-@Preview(name = "Terisi", showBackground = true, showSystemUi = true)
-@Composable
-private fun LoginFilledPreview() =
-    LoginPreviewContent(AuthUiState(email = "sarah@example.com", password = "adadeh123"))

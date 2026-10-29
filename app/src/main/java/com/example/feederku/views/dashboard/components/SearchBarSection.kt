@@ -18,7 +18,6 @@ import com.example.feederku.ui.theme.DMSans
 import com.example.feederku.ui.theme.buttonGreen
 import com.example.feederku.ui.theme.headerFooter
 import com.example.feederku.ui.theme.searchBar
-import com.example.feederku.ui.theme.textBrown
 
 @Composable
 fun SearchBarSection(

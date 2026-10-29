@@ -2,14 +2,15 @@ package com.example.feederku.views.dashboard
 
 import com.example.feederku.views.dashboard.components.DashboardFooter
 import com.example.feederku.views.dashboard.components.DashboardHeader
-/*import com.example.feederku.views.dashboard.components.FeedPostCard
-import com.example.feederku.views.dashboard.components.ImpactStatsSection
-import com.example.feederku.views.dashboard.components.LiveStreamsSection*/
+import com.example.feederku.views.dashboard.components.FeedPostCard
+import com.example.feederku.views.dashboard.components.ImpactCard
+import com.example.feederku.views.dashboard.components.LiveStreamCard
 import com.example.feederku.views.dashboard.components.SearchBarSection
-import com.example.feederku.views.dashboard.components.SectionHeader
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Videocam
@@ -27,15 +28,16 @@ import com.example.feederku.ui.theme.buttonGreen
 import com.example.feederku.ui.theme.creamBackground
 import com.example.feederku.ui.theme.textBrown
 import com.example.feederku.views.dashboard.data.FakeDashboardRepository
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.feederku.ui.theme.DMSans
+import com.example.feederku.views.dashboard.components.SectionHeader
 import com.example.feederku.views.dashboard.model.DashboardTab
 import com.example.feederku.views.dashboard.model.DashboardUiState
 import com.example.feederku.views.dashboard.model.FeedPost
 import com.example.feederku.views.dashboard.model.LiveStream
-import androidx.compose.runtime.getValue
-import androidx.compose.foundation.lazy.items
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.rememberNavController
-import com.example.feederku.ui.theme.DMSans
 
 @Composable
 fun DashboardRoute(
@@ -85,7 +87,7 @@ fun DashboardScreen(
             DashboardHeader(
                 userName = uiState.userName,
                 userTitle = uiState.userTitle,
-                onAddClick = {},
+                onAddClick = onAddClick,
                 onProfileClick = onProfileClick
             )
         },
@@ -136,7 +138,8 @@ fun DashboardScreen(
                 onPostMenuClick = onPostMenuClick,
                 modifier = contentModifier
             )
-            else -> Box(contentModifier, contentAlignment = Alignment.Center){
+            else ->
+                Box(contentModifier, contentAlignment = Alignment.Center){
                 Text("${uiState.selectedTab.label} segera hadir", color = textBrown)
             }
         }
@@ -152,11 +155,23 @@ private fun HomeContent(
     onPostMenuClick: (FeedPost) -> Unit,
     modifier: Modifier = Modifier
 ){
+    //Logika pencarian memfilter feed dynamic
+    val filteredPosts = remember(uiState.searchQuery, uiState.feedPosts){
+        if (uiState.searchQuery.isBlank()) {
+            uiState.feedPosts
+        } else {
+            uiState.feedPosts.filter { post ->
+                post.author.contains(uiState.searchQuery, ignoreCase = true) ||
+                        post.content.contains(uiState.searchQuery, ignoreCase = true)
+            }
+        }
+    }
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(bottom = 88.dp), // space untuk tombol Go Live
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ){
+        // Search Bar
         item {
             SearchBarSection(
                 query = uiState.searchQuery,
@@ -164,29 +179,71 @@ private fun HomeContent(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp)
             )
         }
-        /*item {
-            LiveStreamsSection(
-                streams = uiState.liveStream,
-                onSeeAllClick = onSeeAllClick,
-                onStreamClick = onLiveStreamClick
-            )
-        }*/
-        /*item {
-            ImpactStatsSection(stats = uiState.impactStats)
-        }
+        // Live Stream Section
         item {
-            SectionHeader(
-                title = "Recent Community Feed",
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-        }*/
-        /*items(uiState.feedPosts, key = { it.id } ) { post ->
-            FeedPostCard(
-                post = post,
-                onMenuClick = { onPostMenuClick(post) },
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-        }*/
+            Column( modifier = Modifier.fillMaxWidth()) {
+                SectionHeader(
+                    title = "Live Stream Feed",
+                    onSeeAllClick = onSeeAllClick,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+                Spacer(Modifier.height(8.dp))
+                LazyRow(
+                    contentPadding = PaddingValues (horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ){
+                    items(uiState.liveStream, key = { it.id }) { stream ->
+                        LiveStreamCard(
+                            stream = stream,
+                            onClick = { onLiveStreamClick(stream) }
+                        )
+                    }
+                }
+            }
+        }
+        // Impact Stats Section
+        item {
+            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                SectionHeader(title = "Your Impact")
+                Spacer(Modifier.height(8.dp))
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ){
+                    items(uiState.impactStats) { stat ->
+                        ImpactCard(stat = stat)
+                    }
+                }
+            }
+        }
+        // Community Feed Posts
+        if (filteredPosts.isEmpty()) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(32.dp),
+                    contentAlignment = Alignment.Center
+                ){
+                    Text(
+                        text = if (uiState.searchQuery.isBlank())
+                            "Belum ada postingan."
+                        else
+                            "Tidak ada postingan yang cocok dengan \"${uiState.searchQuery}\"",
+                        color = textBrown.copy(alpha = 0.6f),
+                        fontSize = 14.sp,
+                        fontFamily = DMSans
+                    )
+                }
+            }
+        } else {
+            items( filteredPosts, key = { it.id}) { post ->
+                FeedPostCard(
+                    post = post,
+                    onMenuClick = { onPostMenuClick(post) },
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+            }
+        }
     }
 }
 

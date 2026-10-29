@@ -23,7 +23,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.example.feederku.ui.theme.creamBackground
 import com.example.feederku.ui.theme.headerFooter
-import com.example.feederku.ui.theme.textBrown
 import com.example.feederku.views.dashboard.model.DashboardTab
 
 private fun DashboardTab.icon(): ImageVector = when (this) {

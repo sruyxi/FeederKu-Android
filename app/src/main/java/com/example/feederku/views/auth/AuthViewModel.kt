@@ -38,6 +38,10 @@ class AuthViewModel(
         _uiState.update { it.copy(password = value) }
     }
 
+    //Reset form ketika saat pinah antara login & sign up
+    fun resetForm() {
+        _uiState.value = AuthUiState()
+    }
     fun onLoginClick() = submit {
         repository.signInWithEmail(_uiState.value.email, _uiState.value.password)
     }
