@@ -36,6 +36,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.example.feederku.ui.theme.DMSans
+import com.example.feederku.views.community.ChatRoute
 
 @Composable
 fun DashboardRoute(
@@ -95,23 +96,25 @@ fun DashboardScreen(
             )
         },
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = onGoLiveClick,
-                containerColor = buttonGreen,
-                contentColor = Color.White,
-                shape = RoundedCornerShape(24.dp),
-                icon = {
-                    Icon(Icons.Default.Videocam,
-                        contentDescription = "Go Live")
-                    },
-                text = {
-                    Text(
-                        "Go Live",
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = DMSans
-                    )
-                }
-            )
+            if (uiState.selectedTab == DashboardTab.Home) {
+               ExtendedFloatingActionButton(
+                    onClick = onGoLiveClick,
+                    containerColor = buttonGreen,
+                    contentColor = Color.White,
+                    shape = RoundedCornerShape(24.dp),
+                    icon = {
+                        Icon(Icons.Default.Videocam,
+                            contentDescription = "Go Live")
+                        },
+                    text = {
+                        Text(
+                            "Go Live",
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = DMSans
+                        )
+                    }
+               )
+            }
         }
     ) { innerPadding ->
         val contentModifier = Modifier.fillMaxSize().padding(innerPadding)
@@ -135,6 +138,9 @@ fun DashboardScreen(
                 onLiveStreamClick = onLiveStreamClick,
                 onPostMenuClick = onPostMenuClick,
                 modifier = contentModifier
+            )
+            uiState.selectedTab == DashboardTab.Messages -> ChatRoute(
+                modifier = contentModifier.consumeWindowInsets(innerPadding)
             )
             else -> Box(contentModifier, contentAlignment = Alignment.Center){
                 Text("${uiState.selectedTab.label} segera hadir", color = textBrown)
