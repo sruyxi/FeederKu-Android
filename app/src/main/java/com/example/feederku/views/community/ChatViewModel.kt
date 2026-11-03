@@ -6,6 +6,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.feederku.views.community.data.ChatRepository
 import com.example.feederku.views.community.data.FakeChatRepository
+import com.example.feederku.views.community.data.FirebaseChatRepository
 import com.example.feederku.views.community.model.ChatUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -43,7 +44,7 @@ class ChatViewModel(
 
     companion object {
         val Factory = viewModelFactory {
-            initializer { ChatViewModel(FakeChatRepository()) }
+            initializer { ChatViewModel(FirebaseChatRepository()) }
         }
     }
 }

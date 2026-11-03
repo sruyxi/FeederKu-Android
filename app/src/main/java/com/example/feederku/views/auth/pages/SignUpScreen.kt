@@ -91,6 +91,7 @@ fun SignUpScreen(
                 text = "Sign Up",
                 onClick = onSignUpClick,
                 enabled = uiState.canSignUp,
+                isLoading = uiState.isLoading
             )
             SocialLoginButtons(
                 dividerText = "Or Sign up with",
@@ -143,6 +144,14 @@ fun SignUpScreen(
                 isPassword = true,
                 imeAction = ImeAction.Done
             )
+
+            uiState.errorMessage?.let { errorMsg ->
+                Text(
+                    text = errorMsg,
+                    fontSize = 12.sp,
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.error
+                )
+            }
         }
     }
 }

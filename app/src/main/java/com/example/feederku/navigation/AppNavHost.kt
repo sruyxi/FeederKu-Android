@@ -12,16 +12,22 @@ import com.example.feederku.views.auth.pages.WelcomeScreen
 import com.example.feederku.views.dashboard.DashboardRoute
 import com.example.feederku.views.onboarding.OnBoardingRoute
 import com.example.feederku.views.profile.ProfileScreen
+import com.google.firebase.auth.FirebaseAuth
 
 //pengatur layar
 @Composable
 fun AppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
+    startDestination: String = if (FirebaseAuth.getInstance().currentUser != null) {
+        Routes.Dashboard.route
+    } else {
+        Routes.OnBoarding.route
+    }
 ) {
     NavHost(
         navController = navController,
-        startDestination = Routes.OnBoarding.route,
+        startDestination = startDestination,
         modifier = modifier
     ) {
         composable(Routes.OnBoarding.route) {

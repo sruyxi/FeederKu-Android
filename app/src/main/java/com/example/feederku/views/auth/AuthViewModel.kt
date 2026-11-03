@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.feederku.views.auth.data.AuthRepository
-import com.example.feederku.views.auth.data.FakeAuthRepository
+import com.example.feederku.views.auth.data.FirebaseAuthRepository
 import com.example.feederku.views.auth.model.AuthUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,16 +14,18 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AuthViewModel(
-    private val repository: AuthRepository
+    private val repository: AuthRepository = FirebaseAuthRepository()
 ): ViewModel() {
 
     companion object {
         val Factory = viewModelFactory {
-            initializer { AuthViewModel(FakeAuthRepository) }
+            initializer { AuthViewModel(FirebaseAuthRepository()) }
         }
     }
 
-    private val _uiState = MutableStateFlow(AuthUiState())
+    private val _uiState = MutableStateFlow(
+        AuthUiState(isAuthenticated = repository.isUserLoggedIn)
+    )
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
 
     fun onNameChange(value: String) {
