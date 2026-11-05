@@ -42,13 +42,13 @@ fun InputField(
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Next
 ){
-    //State sesaat (lihat atau sembunyikan password)
+    // Password visibility toggle state
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = modifier.fillMaxWidth()
     ){
-        Text( // Atur tulisan Full Name, Email Address, dan Password
+        Text( // Label text (Full Name, Email Address, Password)
             text = label,
             fontSize = 13.sp,
             fontWeight = FontWeight.Bold,
@@ -72,8 +72,8 @@ fun InputField(
                         Icon(
                             imageVector = if (passwordVisible) Icons.Default.VisibilityOff
                                 else Icons.Default.Visibility,
-                            contentDescription = if (passwordVisible) "Sembunyikan password"
-                                else "Tampilkan password"
+                            contentDescription = if (passwordVisible) "Hide password"
+                                else "Show password"
                         )
                     }
                 }

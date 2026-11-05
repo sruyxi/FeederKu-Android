@@ -30,23 +30,23 @@ import com.example.feederku.ui.theme.creamBackground
 import com.example.feederku.ui.theme.headerFooter
 import com.example.feederku.ui.theme.textBrown
 
-//Kerangka layar: header coklat, area content, dan footer
+// Layout shell: brown header, content area, and footer
 @Composable
 fun AuthLayout(
     onBackClick: () -> Unit,
-    bottomContent: @Composable ColumnScope.() -> Unit, // tombol, "Or ... with, link
+    bottomContent: @Composable ColumnScope.() -> Unit, // buttons, social login, links
     modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit //judul + form
+    content: @Composable ColumnScope.() -> Unit // title + form
 ){
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(creamBackground)
-            .imePadding() //naik ketika keyboard muncul
+            .imePadding() // shifts up when keyboard appears
     ){
         AuthHeader(onBackClick = onBackClick)
 
-        //Area form - bisa discroll kalo layar kecil atau ketika keyboard terbuka
+        // Form area - scrollable when keyboard is open or on small screens
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -55,7 +55,7 @@ fun AuthLayout(
             content = content
         )
 
-        //Footer: selalu menempel di bawah layar
+        // Footer: stays anchored at the bottom of the screen
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -77,7 +77,7 @@ fun AuthHeader(onBackClick: () -> Unit) {
             .background(
                 color = headerFooter
             )
-            .statusBarsPadding() //supaya coklat tetap sampai ke belakang status bar
+            .statusBarsPadding() // extends header background into status bar area
             .height(72.dp)
             .padding(horizontal = 8.dp)
     ){
@@ -87,7 +87,7 @@ fun AuthHeader(onBackClick: () -> Unit) {
         ){
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Kembali",
+                contentDescription = "Back",
                 tint = creamBackground
             )
         }

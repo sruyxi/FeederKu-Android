@@ -129,7 +129,7 @@ fun DashboardScreen(
             ){
                 Text(uiState.errorMessage, color = MaterialTheme.colorScheme.error)
                 Spacer(Modifier.height(12.dp))
-                Button(onClick = onRetry) { Text("Coba lagi") }
+                Button(onClick = onRetry) { Text("Retry") }
             }
             uiState.selectedTab == DashboardTab.Home -> HomeContent(
                 uiState = uiState,
@@ -143,7 +143,7 @@ fun DashboardScreen(
                 modifier = contentModifier.consumeWindowInsets(innerPadding)
             )
             else -> Box(contentModifier, contentAlignment = Alignment.Center){
-                Text("${uiState.selectedTab.label} segera hadir", color = textBrown)
+                Text("${uiState.selectedTab.label} coming soon", color = textBrown)
             }
         }
     }

@@ -118,7 +118,7 @@ fun LoginScreen(
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            //Input Email
+            // Input Email
             InputField(
                 label = "Email Address",
                 value = uiState.email,
@@ -126,7 +126,7 @@ fun LoginScreen(
                 placeholder = "e.g. harry@example.com",
                 keyboardType = KeyboardType.Email,
                 errorMessage = if (uiState.email.isNotEmpty() && !uiState.isEmailValid) {
-                    "Format email tidak valid"
+                    "Invalid email format"
                 } else {
                     null
                 }
@@ -165,11 +165,11 @@ private fun LoginPreviewContent(state: AuthUiState) {
     }
 }
 
-@Preview(name = "Kosong", showBackground = true, showSystemUi = true)
+@Preview(name = "Empty", showBackground = true, showSystemUi = true)
 @Composable
 private fun LoginEmptyPreview() = LoginPreviewContent(AuthUiState())
 
-@Preview(name = "Terisi", showBackground = true, showSystemUi = true)
+@Preview(name = "Filled", showBackground = true, showSystemUi = true)
 @Composable
 private fun LoginFilledPreview() =
-    LoginPreviewContent(AuthUiState(email = "sarah@example.com", password = "adadeh123"))
+    LoginPreviewContent(AuthUiState(email = "sarah@example.com", password = "password123"))

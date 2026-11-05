@@ -48,7 +48,7 @@ fun OnBoardingScreen1 (
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        //Header Foto Kucing
+        // Cat Photo Header
             Image(
                 painter = painterResource(id = R.drawable.foto_kucing),
                 contentDescription = null,

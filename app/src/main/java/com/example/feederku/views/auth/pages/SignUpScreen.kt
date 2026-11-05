@@ -43,12 +43,12 @@ fun SignUpRoute(
 
     LaunchedEffect(uiState.isSignUpSuccess){
         if(uiState.isSignUpSuccess){
-            android.widget.Toast.makeText( // ada tampilan pesan berhasil sebelum pindah ke halaman login
+            android.widget.Toast.makeText(
                 context,
-                "Akun berhasil dibuat! Silakan login.",
+                "Account created successfully! Please login.",
                 android.widget.Toast.LENGTH_SHORT
             ).show()
-            onNavigateToLogin() //pindah ke halaman login
+            onNavigateToLogin()
         }
     }
 
@@ -132,7 +132,7 @@ fun SignUpScreen(
                 placeholder = "e.g. zayn@example.com",
                 keyboardType = KeyboardType.Email,
                 errorMessage = if (uiState.email.isNotEmpty() && !uiState.isEmailValid) {
-                    "Format email tidak valid"
+                    "Invalid email format"
                 } else null
             )
             InputField(

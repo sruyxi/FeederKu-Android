@@ -112,7 +112,7 @@ private fun NavHostController.goToDashboard() {
     }
 }
 
-//Kembali jika ada layar sebelumnya
+// Go back if there is a previous screen
 private fun NavHostController.goBack() {
     if (previousBackStackEntry != null) popBackStack()
 }

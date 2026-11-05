@@ -56,7 +56,7 @@ class AuthViewModel(
 
     fun onGoogleError(message: String?) =
         _uiState.update {
-            it.copy(isLoading = false, errorMessage = message ?: "Login Google gagal")
+            it.copy(isLoading = false, errorMessage = message ?: "Google login failed")
         }
     private fun submit(
         onSuccess: (AuthUiState) -> AuthUiState = { it.copy(isAuthenticated = true) },
@@ -71,7 +71,7 @@ class AuthViewModel(
                 }
                 .onFailure { e ->
                     _uiState.update { s ->
-                        s.copy(isLoading = false, errorMessage = e.message ?: "Terjadi kesalahan")
+                        s.copy(isLoading = false, errorMessage = e.message ?: "An error occurred")
                     }
                 }
         }

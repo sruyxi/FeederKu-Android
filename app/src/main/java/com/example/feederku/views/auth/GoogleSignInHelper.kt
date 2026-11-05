@@ -23,10 +23,10 @@ suspend fun getGoogleIdToken(
     ) {
         Result.success(GoogleIdTokenCredential.createFrom(cred.data).idToken)
     } else {
-        Result.failure(Exception("Credential bukan Google ID token"))
+        Result.failure(Exception("Credential is not a Google ID token"))
     }
 } catch (e: GetCredentialCancellationException) {
-    Result.failure(Exception("Login dibatalkan"))
+    Result.failure(Exception("Login cancelled"))
 } catch (e: Exception) {
     Result.failure(e)
 }

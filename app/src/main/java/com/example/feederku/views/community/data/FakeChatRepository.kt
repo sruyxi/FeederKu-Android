@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import java.util.UUID
+import kotlinx.coroutines.flow.map
 
 class FakeChatRepository : ChatRepository {
 
@@ -14,20 +15,21 @@ class FakeChatRepository : ChatRepository {
 
     private val messages = MutableStateFlow(
         listOf(
-            Message("1", "u1", "Sari", "Ada yang bisa feeding di Taman Menteng sore ini?", now - 600_000),
-            Message("2", "u2", "Budi", "Aku bisa, jam 5 ya. Bawa makanan basah juga.", now - 480_000),
-            Message("3", "u1", "Sari", "Siap! Ada 3 kucing baru di sana kemarin.", now - 300_000)
+            Message("1", "u1", "Sari", "Anyone available for feeding at Menteng Park this afternoon?", now - 600_000),
+            Message("2", "u2", "Budi", "I can make it at 5 PM! Bring wet food as well.", now - 480_000),
+            Message("3", "u1", "Sari", "Got it! Spotted 3 new cats there yesterday.", now - 300_000)
         )
     )
 
-    override fun observeMessages(): Flow<List<Message>> = messages
+    override fun observeMessages(limit: Int): Flow<List<Message>> =
+        messages.map { it.takeLast(limit) }
 
     override suspend fun sendMessage(text: String) {
         messages.update { old ->
             old + Message(
                 id = UUID.randomUUID().toString(),
                 senderId = currentUserId,
-                senderName = "Kamu",
+                senderName = "You",
                 text = text,
                 timestamp = System.currentTimeMillis()
             )

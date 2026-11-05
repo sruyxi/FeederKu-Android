@@ -49,7 +49,7 @@ class DashboardViewModel(
                 }
                 .onFailure { e ->
                     _uiState.update {
-                        it.copy(isLoading = false, errorMessage = e.message ?: "Gagal memuat data")
+                        it.copy(isLoading = false, errorMessage = e.message ?: "Failed to load data")
                     }
                 }
         }

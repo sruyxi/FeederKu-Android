@@ -1,6 +1,5 @@
 package com.example.feederku.views.community.data
 
-import android.util.Log
 import com.example.feederku.views.community.model.Message
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
@@ -20,13 +19,14 @@ class FirebaseChatRepository(
     override val currentUserId: String
         get() = auth.currentUser?.uid.orEmpty()
 
-    // Listens to the "messages" collection and emits the full list on every change
-    override fun observeMessages(): Flow<List<Message>> = callbackFlow {
+    // Listens to the newest [limit] messages and emits them oldest-first
+    override fun observeMessages(limit: Int): Flow<List<Message>> = callbackFlow {
         val listener = db.collection("messages")
-            .orderBy("timestamp", Query.Direction.ASCENDING)
+            .orderBy("timestamp", Query.Direction.DESCENDING)
+            .limit(limit.toLong())
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
-                    Log.e("ChatRepo", "Listen failed", error)
+                    close(error) // the ViewModel catches this and shows an error
                     return@addSnapshotListener
                 }
                 val list = snapshot?.documents?.map { doc ->
@@ -40,17 +40,17 @@ class FirebaseChatRepository(
                             DocumentSnapshot.ServerTimestampBehavior.ESTIMATE
                         )?.toDate()?.time ?: 0L
                     )
-                }.orEmpty()
+                }.orEmpty().reversed()
                 trySend(list)
             }
         awaitClose { listener.remove() }
     }
 
     override suspend fun sendMessage(text: String) {
-        val user = auth.currentUser ?: return
+        val user = auth.currentUser ?: throw IllegalStateException("Not logged in")
         val data = hashMapOf(
             "senderId" to user.uid,
-            "senderName" to (user.displayName ?: user.email?.substringBefore("@") ?: "Anonim"),
+            "senderName" to (user.displayName ?: user.email?.substringBefore("@") ?: "Anonymous"),
             "text" to text,
             "timestamp" to FieldValue.serverTimestamp()
         )

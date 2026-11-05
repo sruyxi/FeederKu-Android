@@ -55,7 +55,7 @@ fun ProfileHeader(
         ){
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Kembali",
+                contentDescription = "Back",
                 tint = Color.White
             )
         }
@@ -79,7 +79,7 @@ fun ProfileHeader(
         ){
             Icon(
                 imageVector = Icons.Default.Settings,
-                contentDescription = "Pengaturan",
+                contentDescription = "Settings",
                 tint = Color.White
             )
         }

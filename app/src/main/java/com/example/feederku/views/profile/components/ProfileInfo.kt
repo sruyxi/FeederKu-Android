@@ -43,7 +43,7 @@ fun ProfileInfo(
     ){
         Image(
             painter = painterResource(user.imageRes),
-            contentDescription = "Foto Profil",
+            contentDescription = "Profile Photo",
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(100.dp)

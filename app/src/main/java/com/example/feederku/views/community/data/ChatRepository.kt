@@ -5,6 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface ChatRepository {
     val currentUserId: String
-    fun observeMessages(): Flow<List<Message>>
+    fun observeMessages(limit: Int): Flow<List<Message>>
     suspend fun sendMessage(text: String)
 }

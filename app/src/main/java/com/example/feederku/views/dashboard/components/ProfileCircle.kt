@@ -33,7 +33,7 @@ fun ProfileCircle(
     if (imageRes != null){
         Image(
             painter = painterResource(imageRes),
-            contentDescription = "Foto $name",
+            contentDescription = "Photo of $name",
             contentScale = ContentScale.Crop,
             modifier = modifier.size(size).clip(CircleShape)
         )

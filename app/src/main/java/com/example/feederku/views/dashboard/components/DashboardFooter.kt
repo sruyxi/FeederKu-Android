@@ -51,8 +51,8 @@ fun DashboardFooter(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
     ){
-        DashboardTab.entries.forEach { tab -> // ambil semua pilihan yang ada di dashboard Tab (Home, Locations, Messages, Favorites)
-            val selected = tab == selectedTab // cek apakah tab yg sedang diproses adalah tab yg sedang di pilih?
+        DashboardTab.entries.forEach { tab -> // iterate over all dashboard tabs (Home, Locations, Messages, Favorites)
+            val selected = tab == selectedTab // check if current tab is selected
             IconButton(
                 onClick = { onTabClick(tab) },
                 modifier = Modifier

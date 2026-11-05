@@ -16,7 +16,7 @@ data class ImpactStat(
     val highlight: Boolean = false
 )
 
-data class FeedPost( // data class -> untuk menyimpan data
+data class FeedPost( // data class -> for storing feed post data
     val id: Int,
     val author: String,
     val timeAgo: String,
@@ -25,11 +25,11 @@ data class FeedPost( // data class -> untuk menyimpan data
     @DrawableRes val imageRes: Int? = null
 )
 
-enum class DashboardTab(val label: String){ //enum class -> untuk pilihan yang sudah ditentukan
-    Home("Beranda"),
-    Locations("Lokasi"),
-    Messages("Pesan"),
-    Favorites("Favorit")
+enum class DashboardTab(val label: String){ // enum class -> predefined tab selections
+    Home("Home"),
+    Locations("Locations"),
+    Messages("Messages"),
+    Favorites("Favorites")
 }
 
 data class DashboardUiState(

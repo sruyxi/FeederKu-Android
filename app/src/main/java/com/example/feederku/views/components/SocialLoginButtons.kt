@@ -82,7 +82,7 @@ fun SocialButton(
         ){
         Image(
             painter = painterResource(id = iconRes),
-            contentDescription = "Login dengan Google",
+            contentDescription = "Login with Google",
             modifier = Modifier
                 .size(32.dp)
                 .scale(3.5f)

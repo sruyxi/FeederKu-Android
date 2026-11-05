@@ -52,7 +52,7 @@ fun DashboardHeader(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ){
-        // Bagian Icon Foto + Nama + Title
+        // Profile Photo + Name + Title section
         Row(
             modifier = Modifier.clickable {
                 onProfileClick()
@@ -99,7 +99,7 @@ fun DashboardHeader(
         ){
             Icon(
                 Icons.Default.Add,
-                contentDescription = "Tambah laporan",
+                contentDescription = "Add report",
                 tint = Color.White
             )
         }

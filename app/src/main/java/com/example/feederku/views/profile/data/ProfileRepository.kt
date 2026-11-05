@@ -23,7 +23,7 @@ class ProfileRepository {
     )
 
     fun getDonationHistory() = listOf(
-        DonationHistory("Save the Beach District Cats", "150.000", DonationStatus.COMPLETED, "28 September 2026", R.drawable.profile_circle),
-        DonationHistory("Medical Care", "100.000", DonationStatus.ON_GOING, "19 Maret 2026", R.drawable.profile_circle),
+        DonationHistory("Save the Beach District Cats", "150.000", DonationStatus.COMPLETED, "September 28, 2026", R.drawable.profile_circle),
+        DonationHistory("Medical Care", "100.000", DonationStatus.ON_GOING, "March 19, 2026", R.drawable.profile_circle),
     )
 }
