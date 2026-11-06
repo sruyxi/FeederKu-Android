@@ -59,7 +59,7 @@ fun LoginRoute(
         onSignUpClick = onSignUpClick,
         onGoogleClick = {
             scope.launch {
-                getGoogleIdToken(context,)
+                getGoogleIdToken(context)
                     .onSuccess(viewModel::onGoogleIdToken)
                     .onFailure { viewModel.onGoogleError(it.message) }
             }

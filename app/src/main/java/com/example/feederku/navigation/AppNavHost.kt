@@ -10,6 +10,7 @@ import com.example.feederku.views.auth.pages.LoginRoute
 import com.example.feederku.views.auth.pages.SignUpRoute
 import com.example.feederku.views.auth.pages.WelcomeScreen
 import com.example.feederku.views.dashboard.DashboardRoute
+import com.example.feederku.views.livestream.LiveStreamRoute
 import com.example.feederku.views.onboarding.OnBoardingRoute
 import com.example.feederku.views.profile.ProfileScreen
 import com.google.firebase.auth.FirebaseAuth
@@ -85,6 +86,18 @@ fun AppNavHost(
             DashboardRoute(
                 onProfileClick = {
                     navController.navigate(Routes.Profile.route)
+                },
+                onGoLiveClick = {
+                    navController.navigate(Routes.LiveStreamFlow.route)
+                },
+                 onLiveStreamClick = { stream ->
+                    navController.navigate(Routes.LiveStreamFlow.route)
+                },
+                onNavigateToMap = {
+                    //navController.navigate(Routes.Map.route)
+                },
+                onNavigateToDonation = {
+                    //navController.navigate(Routes.Donation.route)
                 }
             )
         }
@@ -96,6 +109,15 @@ fun AppNavHost(
                 },
                 onSettingsClick = {
 
+                }
+            )
+        }
+
+        // Live Stream Screen
+        composable(Routes.LiveStreamFlow.route) {
+            LiveStreamRoute(
+                onBackToHome = {
+                    navController.popBackStack(Routes.Dashboard.route, inclusive = false)
                 }
             )
         }
