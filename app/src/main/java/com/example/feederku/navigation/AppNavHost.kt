@@ -1,5 +1,6 @@
 package com.example.feederku.navigation
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -9,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.feederku.views.auth.pages.LoginRoute
 import com.example.feederku.views.auth.pages.SignUpRoute
 import com.example.feederku.views.auth.pages.WelcomeScreen
+import com.example.feederku.views.community.ChatRoute
 import com.example.feederku.views.dashboard.DashboardRoute
 import com.example.feederku.views.livestream.LiveStreamRoute
 import com.example.feederku.views.onboarding.OnBoardingRoute
@@ -98,7 +100,16 @@ fun AppNavHost(
                 },
                 onNavigateToDonation = {
                     //navController.navigate(Routes.Donation.route)
+                },
+                onNavigateToChat = {
+                    navController.navigate(Routes.Chat.route)
                 }
+            )
+        }
+
+        composable(Routes.Chat.route) {
+            ChatRoute(
+                modifier = Modifier.fillMaxSize()
             )
         }
 

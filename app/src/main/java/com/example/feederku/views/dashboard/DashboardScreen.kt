@@ -27,6 +27,7 @@ fun DashboardRoute(
     onLiveStreamClick: (String) -> Unit,
     onNavigateToMap: () -> Unit,
     onNavigateToDonation: () -> Unit,
+    onNavigateToChat: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DashboardViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
@@ -117,13 +118,13 @@ fun DashboardRoute(
         ) {
             Icon(Icons.Default.PlayArrow, contentDescription = "Go Live", tint = Color.White)
             Spacer(modifier = Modifier.width(6.dp))
-            Text("Go Live", fontWeight = FontWeight.Bold, color = Color.White, fontFamily = DMSans)
+            Text("GoLive", fontWeight = FontWeight.Bold, color = Color.White, fontFamily = DMSans)
         }
 
         DashboardFooter(
             onHomeClick = {},
             onMapClick = onNavigateToMap,
-            onChatClick = {},
+            onChatClick = onNavigateToChat,
             onDonateClick = onNavigateToDonation,
             modifier = Modifier.align(Alignment.BottomCenter)
         )

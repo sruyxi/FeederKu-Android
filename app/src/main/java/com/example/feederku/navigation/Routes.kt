@@ -11,4 +11,5 @@ sealed class Routes(val route: String){
     data object LiveStreamFlow: Routes("livestream_flow")
     data object Map : Routes("map")
     data object Donation : Routes("donation")
+    data object Chat : Routes("chat")
 }
