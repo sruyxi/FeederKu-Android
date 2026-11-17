@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -90,8 +91,13 @@ fun InputField(
                 cursorColor = buttonGreen,
                 focusedTextColor = textBrown,
                 unfocusedTextColor = textBrown,
+                errorTextColor = textBrown,
                 focusedPlaceholderColor = textBrown.copy(alpha = 0.4f),
-                unfocusedPlaceholderColor = textBrown.copy(alpha = 0.4f)
+                unfocusedPlaceholderColor = textBrown.copy(alpha = 0.4f),
+                errorPlaceholderColor = textBrown.copy(alpha = 0.4f),
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                errorContainerColor = Color.White
             )
         )
     }

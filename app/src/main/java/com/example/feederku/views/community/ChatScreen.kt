@@ -33,8 +33,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.feederku.R
 import com.example.feederku.model.FeedPost
 import com.example.feederku.ui.theme.*
-import com.example.feederku.views.dashboard.components.FeedPostCard
+import com.example.feederku.views.community.data.GroupItem
 import com.example.feederku.views.community.model.Message
+import com.example.feederku.views.dashboard.components.FeedPostCard
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -45,36 +46,45 @@ fun ChatRoute(
     viewModel: ChatViewModel = viewModel(factory = ChatViewModel.Factory)
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var selectedGroupOrChat by remember { mutableStateOf<String?>(null) }
+    val groups by viewModel.groups.collectAsStateWithLifecycle()
+    val posts by viewModel.posts.collectAsStateWithLifecycle()
+
+    var selectedGroupId by remember { mutableStateOf<String?>(null) }
+    var selectedGroupName by remember { mutableStateOf<String?>(null) }
     var currentTab by remember { mutableStateOf(0) } // 0: Posts, 1: Chat
 
-    if (selectedGroupOrChat == null) {
-        // 1. Feeder Groups Hub Screen (Mockup 1)
+    if (selectedGroupId == null) {
         FeederGroupsHubScreen(
-            onGroupClick = { groupName -> selectedGroupOrChat = groupName },
+            groups = groups,
+            onGroupClick = { groupId, groupName ->
+                selectedGroupId = groupId
+                selectedGroupName = groupName
+                viewModel.selectGroup(groupId)
+            },
             modifier = modifier
         )
     } else {
-        // 2. Community Chat / Message Room Screen (Mockup 2 & 3)
         CommunityChatRoomScreen(
-            title = selectedGroupOrChat ?: "Chat",
+            title = selectedGroupName ?: "Chat",
             uiState = uiState,
+            posts = posts,
             currentTab = currentTab,
             onTabSelected = { currentTab = it },
             onInputChange = viewModel::onInputChange,
-            onSendClick = viewModel::onSendClick,
-            onBackClick = { selectedGroupOrChat = null },
+            onSendClick = { viewModel.onSendClick(selectedGroupId ?: "") },
+            onBackClick = { selectedGroupId = null },
             modifier = modifier
         )
     }
 }
 
 // ==========================================
-// 1. FEEDER GROUPS HUB SCREEN (Mockup 1)
+// 1. FEEDER GROUPS HUB SCREEN
 // ==========================================
 @Composable
 fun FeederGroupsHubScreen(
-    onGroupClick: (String) -> Unit,
+    groups: List<GroupItem>,
+    onGroupClick: (String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var searchQuery by remember { mutableStateOf("") }
@@ -187,7 +197,7 @@ fun FeederGroupsHubScreen(
                         items(friends) { friend ->
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.clickable { onGroupClick(friend.first) }
+                                modifier = Modifier.clickable { onGroupClick("friend_${friend.first}", friend.first) }
                             ) {
                                 Box {
                                     Image(
@@ -235,18 +245,18 @@ fun FeederGroupsHubScreen(
                         name = "Dewi Lestari",
                         message = "I just bought some kitten wet food today...",
                         time = "2m ago",
-                        onClick = { onGroupClick("Dewi Lestari") }
+                        onClick = { onGroupClick("chat_dewi", "Dewi Lestari") }
                     )
                     RecentChatCard(
                         name = "Budi Utomo",
                         message = "Is the ginger cat still under the bridge?",
                         time = "1h ago",
-                        onClick = { onGroupClick("Budi Utomo") }
+                        onClick = { onGroupClick("chat_budi", "Budi Utomo") }
                     )
                 }
             }
 
-            // My Groups Section
+            // My Groups Section (Dynamic from Firestore)
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
@@ -257,22 +267,20 @@ fun FeederGroupsHubScreen(
                         fontFamily = DMSans
                     )
 
-                    GroupCard(
-                        initials = "JU",
-                        groupName = "Jakarta Utara Feeders",
-                        lastMessage = "Reza: We scheduled a massive feeding at 5 PM",
-                        time = "10m ago",
-                        unreadCount = 3,
-                        onClick = { onGroupClick("Feeder Jakarta Utara") }
-                    )
-                    GroupCard(
-                        initials = "KR",
-                        groupName = "Kitten Rescue Club",
-                        lastMessage = "Santi: Little Milo got adopted!",
-                        time = "2h ago",
-                        unreadCount = 0,
-                        onClick = { onGroupClick("Kitten Rescue Club") }
-                    )
+                    if (groups.isEmpty()) {
+                        Text(text = "No groups found.", fontSize = 12.sp, color = textBrown)
+                    } else {
+                        groups.forEach { group ->
+                            GroupCard(
+                                initials = group.initials,
+                                groupName = group.name,
+                                lastMessage = group.lastMessage,
+                                time = group.time,
+                                unreadCount = group.unreadCount,
+                                onClick = { onGroupClick(group.id, group.name) }
+                            )
+                        }
+                    }
 
                     Spacer(modifier = Modifier.height(4.dp))
 
@@ -404,6 +412,7 @@ fun GroupCard(initials: String, groupName: String, lastMessage: String, time: St
 fun CommunityChatRoomScreen(
     title: String,
     uiState: com.example.feederku.views.community.model.ChatUiState,
+    posts: List<FeedPost>,
     currentTab: Int,
     onTabSelected: (Int) -> Unit,
     onInputChange: (String) -> Unit,
@@ -468,33 +477,18 @@ fun CommunityChatRoomScreen(
                 .fillMaxWidth()
         ) {
             if (currentTab == 0) {
-                // Posts Tab Content (Mockup Community Post)
-                val samplePosts = listOf(
-                    FeedPost(
-                        id = "p1",
-                        authorName = "Andi Wijaya",
-                        timeAgo = "2 hrs ago",
-                        content = "Just fed these local community cats at Block F parking lot. They were extremely hungry but very sweet! Please drop by if you have extra wet food.\n\n#streetfeeding #catlover #jakartafeeders"
-                    ),
-                    FeedPost(
-                        id = "p2",
-                        authorName = "Andi Wijaya",
-                        timeAgo = "2 hrs ago",
-                        content = "Just fed these local community cats at Block F parking lot. They were extremely hungry but very sweet! Please drop by if you have extra wet food.\n\n#streetfeeding #catlover #jakartafeeders"
-                    )
-                )
-
+                // Posts Tab Content (Fetched from Firestore)
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(samplePosts) { post ->
+                    items(posts) { post ->
                         FeedPostCard(post = post)
                     }
                 }
             } else {
-                // Chat Tab Content
+                // Chat Tab Content (Fetched from Firestore)
                 when {
                     uiState.isLoading -> CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center),

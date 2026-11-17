@@ -132,6 +132,9 @@ fun StartLiveScreen(
                             },
                             modifier = Modifier.fillMaxSize(),
                             update = { previewView ->
+                                val selector = cameraSelector
+                                val enabled = isVideoEnabled
+
                                 val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
                                 cameraProviderFuture.addListener({
                                     val cameraProvider = cameraProviderFuture.get()
@@ -141,15 +144,14 @@ fun StartLiveScreen(
 
                                     try {
                                         cameraProvider.unbindAll()
-                                        if (isVideoEnabled) {
+                                        if (enabled) {
                                             cameraProvider.bindToLifecycle(
                                                 lifecycleOwner,
-                                                cameraSelector,
+                                                selector,
                                                 preview
                                             )
                                         }
-                                    } catch (exc: Exception) {
-                                        // Log exception if needed
+                                    } catch (_: Exception) {
                                     }
                                 }, ContextCompat.getMainExecutor(context))
                             }
@@ -263,11 +265,11 @@ fun StartLiveScreen(
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = buttonGreen,
-                        unfocusedBorderColor = textBrown.copy(alpha = 0.5f),
+                        unfocusedBorderColor = textBrown.copy(alpha = 0.3f),
                         focusedLabelColor = buttonGreen,
                         unfocusedLabelColor = textBrown,
                         focusedTextColor = textBrown,
-                        unfocusedTextColor = textBrown.copy(alpha = 0.6f),
+                        unfocusedTextColor = textBrown,
                         focusedContainerColor = Color.White,
                         unfocusedContainerColor = Color.White
                     )
@@ -313,7 +315,6 @@ fun StartLiveScreen(
             ) {
                 Button(
                     onClick = { 
-                        // Jika title kosong saat diklik start, gunakan placeholder sebagai default
                         val finalTitle = title.ifBlank { "Feeding stray cats behind the local market" }
                         val finalDesc = description.ifBlank { "Come and join me while I feed some stray cats and make sure they are healthy. Doing live check!" }
                         onStartClick(finalTitle, finalDesc, selectedCategory) 

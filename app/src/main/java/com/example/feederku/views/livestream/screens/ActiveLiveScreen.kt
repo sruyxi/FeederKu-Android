@@ -70,6 +70,9 @@ fun ActiveLiveScreen(
                 },
                 modifier = Modifier.fillMaxSize(),
                 update = { previewView ->
+                    val selector = cameraSelector
+                    val enabled = isVideoEnabled
+
                     val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
                     cameraProviderFuture.addListener({
                         val cameraProvider = cameraProviderFuture.get()
@@ -79,11 +82,13 @@ fun ActiveLiveScreen(
 
                         try {
                             cameraProvider.unbindAll()
-                            cameraProvider.bindToLifecycle(
-                                lifecycleOwner,
-                                cameraSelector,
-                                preview
-                            )
+                            if (enabled) {
+                                cameraProvider.bindToLifecycle(
+                                    lifecycleOwner,
+                                    selector,
+                                    preview
+                                )
+                            }
                         } catch (_: Exception) {
                         }
                     }, ContextCompat.getMainExecutor(context))
@@ -207,7 +212,6 @@ fun ActiveLiveScreen(
             LiveChatInput(
                 onSendComment = onSendComment,
                 onLikeClick = {
-                    // Tambah efek love baru untuk spam love
                     loveEffects = loveEffects + (System.currentTimeMillis().toInt())
                 }
             )
