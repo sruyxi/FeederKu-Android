@@ -22,19 +22,17 @@ import com.example.feederku.ui.theme.textBrown
 @Composable
 fun LiveStreamCard(
     stream: LiveStream,
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
-            .width(160.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column {
-            // Thumbnail placeholder & Live Badge
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

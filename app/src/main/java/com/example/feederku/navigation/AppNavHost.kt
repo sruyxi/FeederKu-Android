@@ -2,16 +2,23 @@ package com.example.feederku.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.feederku.views.auth.pages.LoginRoute
-import com.example.feederku.views.auth.pages.SignUpRoute
-import com.example.feederku.views.auth.pages.WelcomeScreen
+import com.example.feederku.views.auth.LoginRoute
+import com.example.feederku.views.auth.SignUpRoute
+import com.example.feederku.views.auth.WelcomeScreen
+import com.example.feederku.views.auth.ForgotPasswordScreen
+import com.example.feederku.views.auth.AuthViewModel
 import com.example.feederku.views.community.ChatRoute
 import com.example.feederku.views.dashboard.DashboardRoute
+import com.example.feederku.views.dashboard.SeeAllStreamsScreen
 import com.example.feederku.views.donation.DonationDetailsScreen
 import com.example.feederku.views.donation.DonationPaymentMethodScreen
 import com.example.feederku.views.donation.DonationPaymentScreen
@@ -21,6 +28,8 @@ import com.example.feederku.views.donation.DonationRoute
 import com.example.feederku.views.donation.DonationSuccessScreen
 import com.example.feederku.views.donation.DonationViewModel
 import com.example.feederku.views.livestream.LiveStreamRoute
+import com.example.feederku.views.map.MapViewModel
+import com.example.feederku.views.map.pages.LocationDetailsScreen
 import com.example.feederku.views.map.pages.MapScreen
 import com.example.feederku.views.onboarding.OnBoardingRoute
 import com.example.feederku.views.profile.ProfileScreen
@@ -89,7 +98,21 @@ fun AppNavHost(
                     navController.navigate(Routes.SignUp.route){
                         popUpTo(Routes.Login.route) { inclusive = true }
                     }
+                },
+                onForgotPasswordClick = {
+                    navController.navigate(Routes.ForgotPassword.route)
                 }
+            )
+        }
+
+        composable(Routes.ForgotPassword.route) {
+            val viewModel: AuthViewModel = viewModel(factory = AuthViewModel.Factory)
+            val uiState by viewModel.uiState.collectAsState()
+            ForgotPasswordScreen(
+                uiState = uiState,
+                onEmailChange = viewModel::onEmailChange,
+                onSendResetLinkClick = { navController.popBackStack() },
+                onBackClick = { navController.popBackStack() }
             )
         }
         
@@ -101,8 +124,11 @@ fun AppNavHost(
                 onGoLiveClick = {
                     navController.navigate(Routes.LiveStreamFlow.route)
                 },
-                 onLiveStreamClick = { stream ->
+                onLiveStreamClick = { stream ->
                     navController.navigate(Routes.LiveStreamFlow.route)
+                },
+                onSeeAllClick = {
+                    navController.navigate(Routes.SeeAllStreams.route)
                 },
                 onNavigateToMap = {
                     navController.navigate(Routes.Map.route)
@@ -116,10 +142,22 @@ fun AppNavHost(
             )
         }
 
+        composable(Routes.SeeAllStreams.route) {
+            SeeAllStreamsScreen(
+                onBackClick = { navController.popBackStack() },
+                onStreamClick = { streamId ->
+                    navController.navigate(Routes.LiveStreamFlow.route)
+                }
+            )
+        }
+
         composable(Routes.Map.route) {
+            val mapViewModel: MapViewModel = viewModel()
+
             MapScreen(
+                viewModel = mapViewModel,
                 onNavigateToDetails = { id: String ->
-                    // navController.navigate(Routes.LocationDetails.createRoute(id))
+                    navController.navigate(Routes.LocationDetails.createRoute(id))
                 },
                 onNavigateToHome = {
                     navController.navigate(Routes.Dashboard.route) {
@@ -135,8 +173,30 @@ fun AppNavHost(
             )
         }
 
+        composable(Routes.LocationDetails.route) { backStackEntry ->
+            val locationId = backStackEntry.arguments?.getString("locationId").orEmpty()
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(Routes.Map.route)
+            }
+            val mapViewModel: MapViewModel = viewModel(parentEntry)
+            val mapUiState by mapViewModel.uiState.collectAsState()
+
+            val selectedSighting = remember(locationId, mapUiState.sightings) {
+                mapViewModel.getSightingById(locationId)
+            }
+
+            LocationDetailsScreen(
+                locationId = locationId,
+                sighting = selectedSighting,
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+
         composable(Routes.Chat.route) {
             ChatRoute(
+                onNavigateToHome = { navController.navigate(Routes.Dashboard.route) { popUpTo(Routes.Dashboard.route) { inclusive = true } } },
+                onNavigateToMap = { navController.navigate(Routes.Map.route) },
+                onNavigateToDonation = { navController.navigate(Routes.Donation.route) },
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -228,19 +288,21 @@ fun AppNavHost(
         }
 
         // --- Donation Flow ---
-        composable(Routes.Donation.route) {
+        composable(Routes.Donation.route) { backStackEntry ->
+            val donationViewModel = rememberDonationViewModel(navController, backStackEntry)
             DonationRoute(
                 onNavigateToDetails = { id -> navController.navigate(Routes.DonationDetails.createRoute(id)) },
                 onNavigateToRegister = { navController.navigate(Routes.DonationRegistration.route) },
                 onNavigateToHome = { navController.navigate(Routes.Dashboard.route) },
                 onNavigateToMap = { navController.navigate(Routes.Map.route) },
-                onNavigateToChat = { navController.navigate(Routes.Chat.route) }
+                onNavigateToChat = { navController.navigate(Routes.Chat.route) },
+                viewModel = donationViewModel
             )
         }
 
         composable(Routes.DonationDetails.route) { backStackEntry ->
             val campaignId = backStackEntry.arguments?.getString("campaignId") ?: ""
-            val donationViewModel: DonationViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = DonationViewModel.Factory)
+            val donationViewModel = rememberDonationViewModel(navController, backStackEntry)
             DonationDetailsScreen(
                 campaignId = campaignId,
                 onBackClick = { navController.popBackStack() },
@@ -254,7 +316,7 @@ fun AppNavHost(
 
         composable(Routes.DonationPaymentMethod.route) { backStackEntry ->
             val campaignId = backStackEntry.arguments?.getString("campaignId") ?: ""
-            val donationViewModel: DonationViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = DonationViewModel.Factory)
+            val donationViewModel = rememberDonationViewModel(navController, backStackEntry)
             DonationPaymentMethodScreen(
                 campaignId = campaignId,
                 onBackClick = { navController.popBackStack() },
@@ -267,7 +329,7 @@ fun AppNavHost(
 
         composable(Routes.DonationCardDetails.route) { backStackEntry ->
             val campaignId = backStackEntry.arguments?.getString("campaignId") ?: ""
-            val donationViewModel: DonationViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = DonationViewModel.Factory)
+            val donationViewModel = rememberDonationViewModel(navController, backStackEntry)
             com.example.feederku.views.donation.DonationCardDetailsScreen(
                 campaignId = campaignId,
                 onBackClick = { navController.popBackStack() },
@@ -280,7 +342,7 @@ fun AppNavHost(
 
         composable(Routes.DonationPayment.route) { backStackEntry ->
             val campaignId = backStackEntry.arguments?.getString("campaignId") ?: ""
-            val donationViewModel: DonationViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = DonationViewModel.Factory)
+            val donationViewModel = rememberDonationViewModel(navController, backStackEntry)
             DonationPaymentScreen(
                 campaignId = campaignId,
                 onBackClick = { navController.popBackStack() },
@@ -295,8 +357,8 @@ fun AppNavHost(
             )
         }
 
-        composable(Routes.DonationRegistration.route) {
-            val donationViewModel: DonationViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = DonationViewModel.Factory)
+        composable(Routes.DonationRegistration.route) { backStackEntry ->
+            val donationViewModel = rememberDonationViewModel(navController, backStackEntry)
             DonationRegistrationScreen(
                 viewModel = donationViewModel,
                 onBackClick = { navController.popBackStack() },
@@ -335,4 +397,16 @@ private fun NavHostController.logoutAndNavigateToLogin() {
         popUpTo(graph.id) { inclusive = true }
         launchSingleTop = true
     }
+}
+
+@Composable
+private fun rememberDonationViewModel(navController: NavHostController, backStackEntry: androidx.navigation.NavBackStackEntry): DonationViewModel {
+    val viewModelStoreOwner = remember(backStackEntry) {
+        try {
+            navController.getBackStackEntry(Routes.Donation.route)
+        } catch (_: Exception) {
+            backStackEntry
+        }
+    }
+    return viewModel(viewModelStoreOwner, factory = DonationViewModel.Factory)
 }

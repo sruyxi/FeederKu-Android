@@ -120,10 +120,10 @@ fun RequestScreen(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(text = req.first, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = textBrown, fontFamily = DMSans)
-                                Text(text = "1w ago", fontSize = 11.sp, color = Color.Gray, fontFamily = DMSans)
+                                Text(text = "1w ago", fontSize = 11.sp, color = textBrown.copy(alpha = 0.85f), fontFamily = DMSans)
                             }
                             Spacer(modifier = Modifier.height(2.dp))
-                            Text(text = req.second, fontSize = 12.sp, color = textBrown.copy(alpha = 0.7f), maxLines = 1, fontFamily = DMSans)
+                            Text(text = req.second, fontSize = 12.sp, color = textBrown.copy(alpha = 0.9f), maxLines = 1, fontFamily = DMSans)
                         }
                     }
                 }

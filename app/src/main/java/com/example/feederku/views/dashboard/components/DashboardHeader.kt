@@ -29,6 +29,7 @@ fun DashboardHeader(
     userName: String,
     userTitle: String,
     onAddClick: () -> Unit,
+    onProfileClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -40,6 +41,9 @@ fun DashboardHeader(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
+            modifier = Modifier.clickable {
+                onProfileClick()
+            },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {

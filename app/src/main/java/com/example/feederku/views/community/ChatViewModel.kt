@@ -9,6 +9,9 @@ import com.example.feederku.views.community.data.ChatRepository
 import com.example.feederku.views.community.data.FirebaseChatRepository
 import com.example.feederku.views.community.data.GroupItem
 import com.example.feederku.views.community.model.ChatUiState
+import com.example.feederku.views.community.model.ChatMessage
+import com.example.feederku.views.community.network.ChatWebSocketManager
+import com.example.feederku.views.community.network.ConnectionStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
@@ -34,9 +37,57 @@ class ChatViewModel(
     )
     val uiState: StateFlow<ChatUiState> = _uiState.asStateFlow()
 
+    // WebSocket Integration
+    private val webSocketManager = ChatWebSocketManager()
+    val wsConnectionState: StateFlow<ConnectionStatus> = webSocketManager.connectionState
+
+    private val _wsMessages = MutableStateFlow<List<ChatMessage>>(emptyList())
+    val wsMessages: StateFlow<List<ChatMessage>> = _wsMessages.asStateFlow()
+
+    private val _wsInputText = MutableStateFlow("")
+    val wsInputText: StateFlow<String> = _wsInputText.asStateFlow()
+
+    private val wsUserId = "user_" + (1000..9999).random()
+    private val wsUserName = "Feeder User"
+
     init {
         loadGroups()
         selectGroup("default_group")
+
+        webSocketManager.connect("wss://echo.websocket.events")
+
+        viewModelScope.launch {
+            webSocketManager.incomingMessages.collect { msg ->
+                _wsMessages.update { it + msg }
+            }
+        }
+    }
+
+    fun onWsInputChange(text: String) {
+        _wsInputText.value = text
+    }
+
+    fun sendWsMessage() {
+        val text = _wsInputText.value.trim()
+        if (text.isEmpty()) return
+
+        val message = ChatMessage(
+            senderId = wsUserId,
+            senderName = wsUserName,
+            text = text,
+            isFromMe = true
+        )
+
+        val sent = webSocketManager.sendMessage(message)
+        if (sent) {
+            _wsMessages.update { it + message }
+            _wsInputText.value = ""
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        webSocketManager.disconnect()
     }
 
     private fun loadGroups() {

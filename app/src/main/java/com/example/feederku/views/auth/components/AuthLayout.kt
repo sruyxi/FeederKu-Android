@@ -1,4 +1,4 @@
-package com.example.feederku.views.components
+package com.example.feederku.views.auth.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.sp
 import com.example.feederku.ui.theme.DMSans
 import com.example.feederku.ui.theme.creamBackground
 import com.example.feederku.ui.theme.headerFooter
-import com.example.feederku.ui.theme.textBrown
 
 // Layout shell: brown header, content area, and footer
 @Composable

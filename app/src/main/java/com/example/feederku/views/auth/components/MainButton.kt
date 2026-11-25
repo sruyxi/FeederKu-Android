@@ -1,4 +1,4 @@
-package com.example.feederku.views.components
+package com.example.feederku.views.auth.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height

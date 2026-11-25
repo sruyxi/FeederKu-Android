@@ -29,6 +29,10 @@ fun DonationPaymentScreen(
     var agreed by remember { mutableStateOf(false) }
     val user = FirebaseAuth.getInstance().currentUser
 
+    val fee = 2000L
+    val donationAmount = uiState.donationAmount
+    val totalAmount = donationAmount + fee
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -69,18 +73,18 @@ fun DonationPaymentScreen(
                     DetailRow(label = "CAMPAIGN NAME", value = campaign?.title ?: "Save the Beach District Cats")
                     HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = Color.LightGray.copy(alpha = 0.5f))
                     Row(modifier = Modifier.fillMaxWidth()) {
-                        DetailRow(label = "DONATION", value = "Rp 100,000", modifier = Modifier.weight(1f))
-                        DetailRow(label = "PLATFORM FEE", value = "Rp 2,000", modifier = Modifier.weight(1f))
+                        DetailRow(label = "DONATION", value = "Rp %,d".format(donationAmount), modifier = Modifier.weight(1f))
+                        DetailRow(label = "PLATFORM FEE", value = "Rp %,d".format(fee), modifier = Modifier.weight(1f))
                     }
                     HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = Color.LightGray.copy(alpha = 0.5f))
                     Row(modifier = Modifier.fillMaxWidth()) {
                         DetailRow(label = "DONOR NAME", value = user?.displayName ?: "Sarah Chen", modifier = Modifier.weight(1f))
-                        DetailRow(label = "PAYMENT METHOD", value = "Credit Card (**** 4444)", modifier = Modifier.weight(1f))
+                        DetailRow(label = "PAYMENT METHOD", value = uiState.selectedPaymentMethod, modifier = Modifier.weight(1f))
                     }
                     HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = Color.LightGray.copy(alpha = 0.5f))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                         Text("TOTAL AMOUNT", fontWeight = FontWeight.Bold, color = textBrown)
-                        Text("Rp 102,000", fontWeight = FontWeight.Bold, color = buttonGreen, fontSize = 20.sp)
+                        Text("Rp %,d".format(totalAmount), fontWeight = FontWeight.Bold, color = buttonGreen, fontSize = 20.sp)
                     }
                 }
             }
@@ -98,7 +102,7 @@ fun DonationPaymentScreen(
                 onClick = {
                     viewModel.submitDonation(
                         campaignId = campaignId,
-                        amount = 100000L,
+                        amount = donationAmount,
                         donorName = user?.displayName ?: "Anonymous",
                         onSuccess = onConfirmClick
                     )
@@ -106,7 +110,7 @@ fun DonationPaymentScreen(
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = buttonGreen),
                 shape = RoundedCornerShape(28.dp),
-                enabled = agreed && !uiState.isLoading
+                enabled = agreed && !uiState.isLoading && donationAmount > 0L
             ) {
                 if (uiState.isLoading) CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
                 else Text("Confirm & Pay", fontSize = 18.sp, fontWeight = FontWeight.Bold)

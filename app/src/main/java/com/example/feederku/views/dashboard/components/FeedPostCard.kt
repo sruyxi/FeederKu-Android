@@ -22,6 +22,7 @@ import com.example.feederku.ui.theme.textBrown
 @Composable
 fun FeedPostCard(
     post: FeedPost,
+    onMenuClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -62,7 +63,9 @@ fun FeedPostCard(
                         )
                     }
                 }
-                Icon(Icons.Default.MoreVert, contentDescription = "Options", tint = textBrown)
+                IconButton(onClick = onMenuClick) {
+                    Icon(Icons.Default.MoreVert, contentDescription = "Options", tint = textBrown)
+                }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -74,7 +77,6 @@ fun FeedPostCard(
             )
 
             Spacer(modifier = Modifier.height(12.dp))
-            // Gambar postingan
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

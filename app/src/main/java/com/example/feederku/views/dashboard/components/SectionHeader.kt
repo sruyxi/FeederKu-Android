@@ -16,8 +16,8 @@ import com.example.feederku.ui.theme.textBrown
 @Composable
 fun SectionHeader(
     title: String,
-    onSeeAllClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onSeeAllClick: (() -> Unit)? = null
 ) {
     Row(
         modifier = modifier
@@ -33,13 +33,15 @@ fun SectionHeader(
             color = textBrown,
             fontFamily = DMSans
         )
-        Text(
-            text = "See All",
-            fontSize = 13.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = buttonGreen,
-            fontFamily = DMSans,
-            modifier = Modifier.clickable { onSeeAllClick() }
-        )
+        if (onSeeAllClick != null) {
+            Text(
+                text = "See All",
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = buttonGreen,
+                fontFamily = DMSans,
+                modifier = Modifier.clickable { onSeeAllClick() }
+            )
+        }
     }
 }

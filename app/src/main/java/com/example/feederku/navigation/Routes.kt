@@ -6,6 +6,8 @@ sealed class Routes(val route: String){
     data object Welcome : Routes("welcome")
     data object SignUp : Routes("signup")
     data object Login : Routes("login")
+    data object ForgotPassword : Routes("forgot_password")
+    data object VerifyEmail : Routes("verify_email")
     data object Dashboard : Routes("dashboard")
     data object Profile : Routes("profile")
     data object Settings : Routes("settings")
@@ -18,7 +20,11 @@ sealed class Routes(val route: String){
     data object HelpSupport : Routes("settings/help_support")
     data object AboutFeederKu : Routes("settings/about")
     data object LiveStreamFlow: Routes("livestream_flow")
+    data object SeeAllStreams : Routes("see_all_streams")
     data object Map : Routes("map")
+    data object LocationDetails : Routes("location_details/{locationId}") {
+        fun createRoute(locationId: String) = "location_details/$locationId"
+    }
     data object Donation : Routes("donation")
     data object DonationDetails : Routes("donation_details/{campaignId}") {
         fun createRoute(campaignId: String) = "donation_details/$campaignId"

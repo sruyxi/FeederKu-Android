@@ -49,8 +49,8 @@ fun DonationDetailsScreen(
             TopAppBar(
                 title = {
                     Column {
-                        Text("Campaign Details", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                        Text("Support local stray rescue & medical care", fontSize = 12.sp, color = Color.Gray)
+                        Text("Campaign Details", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = textBrown)
+                        Text("Support local stray rescue & medical care", fontSize = 12.sp, color = textBrown.copy(alpha = 0.85f))
                     }
                 },
                 navigationIcon = {
@@ -190,12 +190,12 @@ fun DonationDetailsScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Column {
-                                        Text("Donors", fontSize = 12.sp, color = Color.Gray)
-                                        Text("${campaign.donorCount}", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                        Text("Donors", fontSize = 12.sp, color = textBrown.copy(alpha = 0.85f), fontWeight = FontWeight.SemiBold)
+                                        Text("${campaign.donorCount}", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = textBrown)
                                     }
                                     Column(horizontalAlignment = Alignment.End) {
-                                        Text("Remaining", fontSize = 12.sp, color = Color.Gray)
-                                        Text("${campaign.daysRemaining} days", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                        Text("Remaining", fontSize = 12.sp, color = textBrown.copy(alpha = 0.85f), fontWeight = FontWeight.SemiBold)
+                                        Text("${campaign.daysRemaining} days", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = textBrown)
                                     }
                                 }
                             }

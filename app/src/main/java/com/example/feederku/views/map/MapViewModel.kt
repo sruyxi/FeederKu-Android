@@ -3,11 +3,10 @@ package com.example.feederku.views.map
 import androidx.lifecycle.ViewModel
 import com.example.feederku.views.map.model.Sighting
 import com.example.feederku.views.map.model.SightingCategory
-import org.osmdroid.util.GeoPoint
+import org.maplibre.android.geometry.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import org.maplibre.android.geometry.LatLng
 
 data class MapUiState(
     val sightings: List<Sighting> = emptyList(),
@@ -17,10 +16,10 @@ data class MapUiState(
     val reportCategory: SightingCategory? = null,
     val reportNotes: String = "",
     val isPlacingSighting: Boolean = false,
-    val pendingSightingLocation: GeoPoint? = null,
+    val pendingSightingLocation: LatLng? = null,
     val selectedFilter: String = "Urgent Spots",
     val isShowingRoute: Boolean = false,
-    val routeDestination: GeoPoint? = null
+    val routeDestination: LatLng? = null
 )
 
 class MapViewModel : ViewModel() {
@@ -28,43 +27,53 @@ class MapViewModel : ViewModel() {
         sightings = listOf(
             Sighting(
                 id = "1",
-                title = "Benton Junction",
-                location = LatLng(-6.225, 106.611),
-                distance = "500m away",
-                category = SightingCategory.URGENT_HELP,
-                status = "URGENT",
-                description = "Estimated 4 cats reported here. They haven't been fed since yesterday noon. Near Family Mart",
-                address = "Benton Junction, Lippo Karawaci"
+                title = "Supermal Karawaci",
+                location = LatLng(-6.2215, 106.6135),
+                distance = "300m away",
+                category = SightingCategory.MANY_CATS,
+                status = "HUNGRY",
+                description = "Group of stray cats near main entrance parking looking for food.",
+                address = "Supermal Karawaci, Lippo Karawaci"
             ),
             Sighting(
                 id = "2",
-                title = "U-Residence 1",
-                location = LatLng(-6.226, 106.612),
-                distance = "1 km away",
-                category = SightingCategory.MANY_CATS,
-                status = "HUNGRY",
-                description = "Oh no!! estimated 4 cats reported here. Hasn't been fed yet.",
-                address = "U-Residence 1"
+                title = "SPM Lippo Village",
+                location = LatLng(-6.2268, 106.6089),
+                distance = "650m away",
+                category = SightingCategory.URGENT_HELP,
+                status = "URGENT",
+                description = "Injured kitten spotted near SPM school gate. Needs immediate medical checkup.",
+                address = "SPM Lippo Village, Karawaci"
             ),
             Sighting(
                 id = "3",
-                title = "U-Residence 3",
-                location = LatLng(-6.224, 106.610),
-                distance = "1 km away",
-                category = SightingCategory.MANY_CATS,
-                status = "MANY CATS",
-                description = "Estimated 5 cats reported here.",
-                address = "U-Residence 3"
+                title = "UPH Campus Gate",
+                location = LatLng(-6.2321, 106.5998),
+                distance = "1.2 km away",
+                category = SightingCategory.ALREADY_FED,
+                status = "FED",
+                description = "Fed by campus community earlier this morning. Well fed and resting.",
+                address = "Universitas Pelita Harapan (UPH)"
             ),
             Sighting(
                 id = "4",
-                title = "Pet Care Plus",
-                location = LatLng(-6.224, 106.613),
-                distance = "600m away",
+                title = "Benton Junction",
+                location = LatLng(-6.2250, 106.6110),
+                distance = "500m away",
+                category = SightingCategory.URGENT_HELP,
+                status = "URGENT",
+                description = "Estimated 4 cats reported here near Family Mart. Haven't been fed since yesterday.",
+                address = "Benton Junction, Lippo Karawaci"
+            ),
+            Sighting(
+                id = "5",
+                title = "Maxxbox Karawaci",
+                location = LatLng(-6.2198, 106.6050),
+                distance = "1.5 km away",
                 category = SightingCategory.VET,
                 status = "OPEN",
-                description = "All animals",
-                address = "Pet Care Plus"
+                description = "Nearby partner vet clinic open for emergency checkups.",
+                address = "Maxxbox Karawaci"
             )
         )
     ))
@@ -90,19 +99,34 @@ class MapViewModel : ViewModel() {
         _uiState.update { it.copy(isPlacingSighting = true, isReporting = false) }
     }
 
-    fun onMapClick(geoPoint: GeoPoint) {
+    fun onMapClick(latLng: LatLng) {
         if (_uiState.value.isPlacingSighting) {
             _uiState.update { 
                 it.copy(
-                    pendingSightingLocation = geoPoint, 
+                    pendingSightingLocation = latLng, 
                     isReporting = true, 
                     isPlacingSighting = false,
-                    reportAddress = String.format("%.4f, %.4f", geoPoint.latitude, geoPoint.longitude)
+                    reportAddress = String.format("Karawaci Area (%.4f, %.4f)", latLng.latitude, latLng.longitude)
                 ) 
             }
         } else {
             onDismissSighting()
         }
+    }
+
+    fun getSightingById(locationId: String): Sighting {
+        return uiState.value.sightings.find { it.id == locationId }
+            ?: uiState.value.selectedSighting
+            ?: Sighting(
+                id = locationId,
+                title = "Supermal Karawaci",
+                location = LatLng(-6.2215, 106.6135),
+                distance = "300m",
+                category = SightingCategory.MANY_CATS,
+                description = "Stray cats spotted near entrance.",
+                status = "HUNGRY",
+                address = "Supermal Karawaci"
+            )
     }
 
     fun onReportAddressChange(address: String) {
@@ -125,11 +149,30 @@ class MapViewModel : ViewModel() {
 
     fun onGetRouteClick() {
         val loc = _uiState.value.selectedSighting?.location
-        val geoPoint = loc?.let { GeoPoint(it.latitude, it.longitude) }
-        _uiState.update { it.copy(isShowingRoute = true, routeDestination = geoPoint) }
+        _uiState.update { it.copy(isShowingRoute = true, routeDestination = loc) }
     }
 
     fun onSubmitReport() {
-        _uiState.update { it.copy(isReporting = false, reportAddress = "", reportCategory = null, reportNotes = "") }
+        val newSighting = Sighting(
+            id = System.currentTimeMillis().toString(),
+            title = _uiState.value.reportCategory?.label ?: "New Sighting Spot",
+            location = _uiState.value.pendingSightingLocation ?: LatLng(-6.225, 106.611),
+            distance = "Nearby",
+            category = _uiState.value.reportCategory ?: SightingCategory.MANY_CATS,
+            description = _uiState.value.reportNotes.ifBlank { "Reported stray cat sighting in Karawaci area." },
+            status = if (_uiState.value.reportCategory == SightingCategory.URGENT_HELP) "URGENT" else "HUNGRY",
+            address = _uiState.value.reportAddress.ifBlank { "Lippo Karawaci, Tangerang" }
+        )
+        _uiState.update { 
+            it.copy(
+                sightings = it.sightings + newSighting,
+                isReporting = false, 
+                reportAddress = "", 
+                reportCategory = null, 
+                reportNotes = "",
+                pendingSightingLocation = null,
+                selectedSighting = newSighting
+            ) 
+        }
     }
 }

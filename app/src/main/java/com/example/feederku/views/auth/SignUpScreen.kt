@@ -1,5 +1,6 @@
-package com.example.feederku.views.auth.pages
+package com.example.feederku.views.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,14 +20,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.feederku.ui.theme.textBrown
-import com.example.feederku.views.auth.AuthViewModel
-import com.example.feederku.views.auth.getGoogleIdToken
+import com.example.feederku.data.remote.getGoogleIdToken
 import com.example.feederku.views.auth.model.AuthUiState
-import com.example.feederku.views.components.AuthLayout
-import com.example.feederku.views.components.AuthSwitchText
+import com.example.feederku.views.auth.components.AuthLayout
+import com.example.feederku.views.auth.components.AuthSwitchText
 import com.example.feederku.views.components.InputField
-import com.example.feederku.views.components.MainButton
-import com.example.feederku.views.components.SocialLoginButtons
+import com.example.feederku.views.auth.components.MainButton
+import com.example.feederku.views.auth.components.SocialLoginButtons
 import kotlinx.coroutines.launch
 
 @Composable

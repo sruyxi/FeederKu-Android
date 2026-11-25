@@ -1,4 +1,4 @@
-package com.example.feederku.views.onboarding.pages
+package com.example.feederku.views.onboarding.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -67,7 +66,7 @@ fun OnBoardingImagePage(
             Spacer(modifier = Modifier.height(10.dp))
 
             Text(
-                text = "Feed Strays Near You",
+                text = title,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.ExtraBold,
                 fontFamily = DMSans,
@@ -76,9 +75,7 @@ fun OnBoardingImagePage(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Locate feeding points and coordinates with " +
-                        "fellow cat lovers to make sure no stary cats " +
-                        "goes hungry tonight",
+                text = description,
                 fontSize = 12.sp,
                 fontFamily = DMSans,
                 color = textBrown,

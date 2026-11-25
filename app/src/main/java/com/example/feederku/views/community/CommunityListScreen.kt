@@ -105,9 +105,9 @@ fun GroupItem(group: CommunityGroup, onClick: () -> Unit) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = group.name, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = textBrown)
                     Spacer(modifier = Modifier.weight(1f))
-                    Text(text = formatTime(group.lastMessageTime), fontSize = 10.sp, color = Color.Gray)
+                    Text(text = formatTime(group.lastMessageTime), fontSize = 10.sp, color = textBrown.copy(alpha = 0.85f))
                 }
-                Text(text = group.lastMessage, fontSize = 13.sp, color = Color.Gray, maxLines = 1)
+                Text(text = group.lastMessage, fontSize = 13.sp, color = textBrown.copy(alpha = 0.85f), maxLines = 1)
                 Text(text = "${group.memberCount} members", fontSize = 11.sp, color = buttonGreen, fontWeight = FontWeight.Bold)
             }
         }

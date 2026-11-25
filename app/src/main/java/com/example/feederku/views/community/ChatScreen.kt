@@ -14,6 +14,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AttachFile
+import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
@@ -32,6 +33,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.feederku.R
 import com.example.feederku.model.FeedPost
+import com.example.feederku.navigation.BottomNavbar
+import com.example.feederku.navigation.Routes
 import com.example.feederku.ui.theme.*
 import com.example.feederku.views.community.data.GroupItem
 import com.example.feederku.views.community.model.Message
@@ -42,6 +45,9 @@ import java.util.Locale
 
 @Composable
 fun ChatRoute(
+    onNavigateToHome: () -> Unit = {},
+    onNavigateToMap: () -> Unit = {},
+    onNavigateToDonation: () -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: ChatViewModel = viewModel(factory = ChatViewModel.Factory)
 ) {
@@ -55,74 +61,102 @@ fun ChatRoute(
     var selectedFriendName by remember { mutableStateOf<String?>(null) }
     var currentTab by remember { mutableStateOf(0) } // 0: Posts, 1: Chat
 
-    when (currentScreen) {
-        "room" -> {
-            CommunityChatRoomScreen(
-                title = selectedGroupName ?: "Chat",
-                uiState = uiState,
-                posts = posts,
-                currentTab = currentTab,
-                onTabSelected = { currentTab = it },
-                onInputChange = viewModel::onInputChange,
-                onSendClick = { viewModel.onSendClick(selectedGroupId ?: "default_group") },
-                onBackClick = { currentScreen = "hub" },
-                modifier = modifier
-            )
-        }
-        "request" -> {
-            RequestScreen(
-                onBackClick = { currentScreen = "hub" },
-                onMessageClick = { friendName ->
-                    selectedFriendName = friendName
-                    currentScreen = "dm"
-                },
-                modifier = modifier
-            )
-        }
-        "dm" -> {
-            DirectMessageScreen(
-                friendName = selectedFriendName ?: "Friend",
-                uiState = uiState,
-                onInputChange = viewModel::onInputChange,
-                onSendClick = { viewModel.onSendClick("default_group") },
-                onBackClick = { currentScreen = "hub" },
-                modifier = modifier
-            )
-        }
-        "publish" -> {
-            PublishPostScreen(
-                caption = uiState.input,
-                onCaptionChange = viewModel::onInputChange,
-                location = "",
-                onLocationChange = {},
-                onSpotClick = {},
-                onBackClick = { currentScreen = "room" },
-                onPublishClick = {
-                    if (uiState.input.isNotBlank()) {
-                        viewModel.createPost(selectedGroupId ?: "default_group", uiState.input)
-                        currentScreen = "room"
+    Scaffold(
+        modifier = modifier,
+        bottomBar = {
+            if (currentScreen == "hub") {
+                BottomNavbar(
+                    currentRoute = Routes.Chat.route,
+                    onNavigate = { route ->
+                        when (route) {
+                            Routes.Dashboard.route -> onNavigateToHome()
+                            Routes.Map.route -> onNavigateToMap()
+                            Routes.Donation.route -> onNavigateToDonation()
+                        }
                     }
-                },
-                modifier = modifier
-            )
+                )
+            }
         }
-        else -> {
-            FeederGroupsHubScreen(
-                groups = groups,
-                onRequestClick = { currentScreen = "request" },
-                onFriendClick = { friendName ->
-                    selectedFriendName = friendName
-                    currentScreen = "dm"
-                },
-                onGroupClick = { groupId, groupName ->
-                    selectedGroupId = groupId
-                    selectedGroupName = groupName
-                    viewModel.selectGroup(groupId)
-                    currentScreen = "room"
-                },
-                onCreateGroupClick = { currentScreen = "publish" },
-                modifier = modifier
-            )
+    ) { padding ->
+        Box(modifier = Modifier.fillMaxSize().padding(bottom = padding.calculateBottomPadding())) {
+            when (currentScreen) {
+                "room" -> {
+                    CommunityChatRoomScreen(
+                        title = selectedGroupName ?: "Chat",
+                        uiState = uiState,
+                        posts = posts,
+                        currentTab = currentTab,
+                        onTabSelected = { currentTab = it },
+                        onInputChange = viewModel::onInputChange,
+                        onSendClick = { viewModel.onSendClick(selectedGroupId ?: "default_group") },
+                        onBackClick = { currentScreen = "hub" },
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+                "request" -> {
+                    RequestScreen(
+                        onBackClick = { currentScreen = "hub" },
+                        onMessageClick = { friendName ->
+                            selectedFriendName = friendName
+                            currentScreen = "dm"
+                        },
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+                "dm" -> {
+                    DirectMessageScreen(
+                        friendName = selectedFriendName ?: "Friend",
+                        uiState = uiState,
+                        onInputChange = viewModel::onInputChange,
+                        onSendClick = { viewModel.onSendClick("default_group") },
+                        onBackClick = { currentScreen = "hub" },
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+                "publish" -> {
+                    PublishPostScreen(
+                        caption = uiState.input,
+                        onCaptionChange = viewModel::onInputChange,
+                        location = "",
+                        onLocationChange = {},
+                        onSpotClick = {},
+                        onBackClick = { currentScreen = "room" },
+                        onPublishClick = {
+                            if (uiState.input.isNotBlank()) {
+                                viewModel.createPost(selectedGroupId ?: "default_group", uiState.input)
+                                currentScreen = "room"
+                            }
+                        },
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+                "realtime" -> {
+                    RealtimeChatScreen(
+                        viewModel = viewModel,
+                        onBackClick = { currentScreen = "hub" },
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+                else -> {
+                    FeederGroupsHubScreen(
+                        groups = groups,
+                        onRequestClick = { currentScreen = "request" },
+                        onFriendClick = { friendName ->
+                            selectedFriendName = friendName
+                            currentScreen = "dm"
+                        },
+                        onGroupClick = { groupId, groupName ->
+                            selectedGroupId = groupId
+                            selectedGroupName = groupName
+                            viewModel.selectGroup(groupId)
+                            currentScreen = "room"
+                        },
+                        onCreateGroupClick = { currentScreen = "publish" },
+                        onRealtimeChatClick = { currentScreen = "realtime" },
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            }
         }
     }
 }
@@ -137,6 +171,7 @@ fun FeederGroupsHubScreen(
     onFriendClick: (String) -> Unit,
     onGroupClick: (String, String) -> Unit,
     onCreateGroupClick: () -> Unit,
+    onRealtimeChatClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var searchQuery by remember { mutableStateOf("") }
@@ -190,23 +225,36 @@ fun FeederGroupsHubScreen(
             contentPadding = PaddingValues(vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Search Bar
+            // Search Bar & Realtime Chat Button
             item {
-                OutlinedTextField(
-                    value = searchQuery,
-                    onValueChange = { searchQuery = it },
-                    placeholder = { Text("Search groups or friends...", color = textBrown.copy(alpha = 0.5f)) },
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = textBrown) },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = buttonGreen,
-                        unfocusedBorderColor = Color.Transparent,
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White
-                    ),
-                    singleLine = true
-                )
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    OutlinedTextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        placeholder = { Text("Search groups or friends...", color = textBrown.copy(alpha = 0.5f)) },
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = textBrown) },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = buttonGreen,
+                            unfocusedBorderColor = Color.Transparent,
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White
+                        ),
+                        singleLine = true
+                    )
+
+                    Button(
+                        onClick = onRealtimeChatClick,
+                        modifier = Modifier.fillMaxWidth().height(48.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = buttonGreen),
+                        shape = RoundedCornerShape(24.dp)
+                    ) {
+                        Icon(Icons.Default.Chat, contentDescription = null, tint = Color.White)
+                        Spacer(Modifier.width(8.dp))
+                        Text("Open Live WebSocket Chat (Real-Time)", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                    }
+                }
             }
 
             // Friends Online Section
@@ -387,10 +435,10 @@ fun RecentChatCard(name: String, message: String, time: String, onClick: () -> U
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(text = name, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = textBrown, fontFamily = DMSans)
-                    Text(text = time, fontSize = 11.sp, color = Color.Gray, fontFamily = DMSans)
+                    Text(text = time, fontSize = 11.sp, color = textBrown.copy(alpha = 0.85f), fontFamily = DMSans)
                 }
                 Spacer(modifier = Modifier.height(2.dp))
-                Text(text = message, fontSize = 12.sp, color = textBrown.copy(alpha = 0.7f), maxLines = 1, fontFamily = DMSans)
+                Text(text = message, fontSize = 12.sp, color = textBrown.copy(alpha = 0.9f), maxLines = 1, fontFamily = DMSans)
             }
         }
     }
@@ -424,7 +472,7 @@ fun GroupCard(initials: String, groupName: String, lastMessage: String, time: St
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(text = groupName, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = textBrown, fontFamily = DMSans)
-                    Text(text = time, fontSize = 11.sp, color = Color.Gray, fontFamily = DMSans)
+                    Text(text = time, fontSize = 11.sp, color = textBrown.copy(alpha = 0.85f), fontFamily = DMSans)
                 }
                 Spacer(modifier = Modifier.height(2.dp))
                 Row(
@@ -435,7 +483,7 @@ fun GroupCard(initials: String, groupName: String, lastMessage: String, time: St
                     Text(
                         text = lastMessage,
                         fontSize = 12.sp,
-                        color = textBrown.copy(alpha = 0.7f),
+                        color = textBrown.copy(alpha = 0.9f),
                         maxLines = 1,
                         modifier = Modifier.weight(1f),
                         fontFamily = DMSans

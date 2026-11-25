@@ -21,6 +21,8 @@ data class DonationUiState(
     val recentDonors: List<Donor> = emptyList(),
     val searchQuery: String = "",
     val selectedCategory: String = "All",
+    val donationAmount: Long = 100000L,
+    val selectedPaymentMethod: String = "Credit Card",
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 )
@@ -70,6 +72,16 @@ class DonationViewModel(
                 filteredCampaigns = applyFilters(state.campaigns, state.searchQuery, category)
             )
         }
+    }
+
+    fun onAmountChange(amountStr: String) {
+        val clean = amountStr.filter { it.isDigit() }
+        val amount = clean.toLongOrNull() ?: 0L
+        _uiState.update { it.copy(donationAmount = amount) }
+    }
+
+    fun setSelectedPaymentMethod(method: String) {
+        _uiState.update { it.copy(selectedPaymentMethod = method) }
     }
 
     private fun applyFilters(campaigns: List<DonationCampaign>, query: String, category: String): List<DonationCampaign> {

@@ -27,6 +27,9 @@ class MainActivity : ComponentActivity() {
         // 3. Load configuration
         Configuration.getInstance().load(this, getPreferences(MODE_PRIVATE))
 
+        // Initialize MapLibre
+        org.maplibre.android.MapLibre.getInstance(this)
+
         enableEdgeToEdge()
         setContent {
             FeederkuTheme {

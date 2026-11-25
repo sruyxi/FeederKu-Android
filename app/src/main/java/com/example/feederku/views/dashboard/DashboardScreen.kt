@@ -25,6 +25,7 @@ fun DashboardRoute(
     onProfileClick: () -> Unit,
     onGoLiveClick: () -> Unit,
     onLiveStreamClick: (String) -> Unit,
+    onSeeAllClick: () -> Unit = {},
     onNavigateToMap: () -> Unit,
     onNavigateToDonation: () -> Unit,
     onNavigateToChat: () -> Unit,
@@ -49,7 +50,8 @@ fun DashboardRoute(
                 DashboardHeader(
                     userName = uiState.userName,
                     userTitle = uiState.userTitle,
-                    onAddClick = onProfileClick
+                    onAddClick = onProfileClick,
+                    onProfileClick = onProfileClick
                 )
             }
 
@@ -63,7 +65,7 @@ fun DashboardRoute(
             }
 
             item {
-                SectionHeader(title = "Recent Live Streams", onSeeAllClick = {})
+                SectionHeader(title = "Recent Live Streams", onSeeAllClick = onSeeAllClick)
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyRow(
                     contentPadding = PaddingValues(horizontal = 16.dp),
@@ -72,7 +74,8 @@ fun DashboardRoute(
                     items(uiState.recentStreams) { stream ->
                         LiveStreamCard(
                             stream = stream,
-                            onClick = { onLiveStreamClick(stream.id) }
+                            onClick = { onLiveStreamClick(stream.id) },
+                            modifier = Modifier.width(160.dp)
                         )
                     }
                 }
@@ -126,6 +129,7 @@ fun DashboardRoute(
             onMapClick = onNavigateToMap,
             onChatClick = onNavigateToChat,
             onDonateClick = onNavigateToDonation,
+            currentRoute = "dashboard",
             modifier = Modifier.align(Alignment.BottomCenter)
         )
     }

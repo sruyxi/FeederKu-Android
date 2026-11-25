@@ -1,4 +1,4 @@
-package com.example.feederku.views.components
+package com.example.feederku.views.auth.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row

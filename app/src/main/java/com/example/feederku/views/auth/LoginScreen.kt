@@ -1,8 +1,11 @@
-package com.example.feederku.views.auth.pages
+package com.example.feederku.views.auth
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -10,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -23,14 +27,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.feederku.ui.theme.DMSans
 import com.example.feederku.ui.theme.FeederkuTheme
 import com.example.feederku.ui.theme.textBrown
-import com.example.feederku.views.auth.AuthViewModel
-import com.example.feederku.views.auth.getGoogleIdToken
+import com.example.feederku.data.remote.getGoogleIdToken
 import com.example.feederku.views.auth.model.AuthUiState
-import com.example.feederku.views.components.AuthLayout
-import com.example.feederku.views.components.AuthSwitchText
+import com.example.feederku.views.auth.components.AuthLayout
+import com.example.feederku.views.auth.components.AuthSwitchText
 import com.example.feederku.views.components.InputField
-import com.example.feederku.views.components.MainButton
-import com.example.feederku.views.components.SocialLoginButtons
+import com.example.feederku.views.auth.components.MainButton
+import com.example.feederku.views.auth.components.SocialLoginButtons
 import kotlinx.coroutines.launch
 
 
@@ -40,6 +43,7 @@ fun LoginRoute(
     onLoginSuccess: () -> Unit, //navigasi ke Home-Dashboard
     onBackClick: () -> Unit,
     onSignUpClick: () -> Unit,
+    onForgotPasswordClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AuthViewModel = viewModel(factory = AuthViewModel.Factory)
 ){
@@ -57,6 +61,7 @@ fun LoginRoute(
         onLoginClick = viewModel::onLoginClick,
         onBackClick = onBackClick,
         onSignUpClick = onSignUpClick,
+        onForgotPasswordClick = onForgotPasswordClick,
         onGoogleClick = {
             scope.launch {
                 getGoogleIdToken(context)
@@ -82,6 +87,7 @@ fun LoginScreen(
     onLoginClick: () -> Unit,
     onBackClick: () -> Unit,
     onSignUpClick: () -> Unit,
+    onForgotPasswordClick: () -> Unit,
     onGoogleClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -148,6 +154,20 @@ fun LoginScreen(
                 imeAction = ImeAction.Done
             )
 
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.CenterEnd
+            ){
+                Text(
+                    text = "Forgot Password?",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = textBrown,
+                    fontFamily = DMSans,
+                    modifier = Modifier.clickable { onForgotPasswordClick() }
+                )
+            }
+
             uiState.errorMessage?.let { errorMsg ->
                 Text(
                     text = errorMsg,
@@ -164,8 +184,12 @@ private fun LoginPreviewContent(state: AuthUiState) {
     FeederkuTheme {
         LoginScreen(
             uiState = state,
-            onEmailChange = {}, onPasswordChange = {},
-            onLoginClick = {}, onBackClick = {}, onSignUpClick = {},
+            onEmailChange = {},
+            onPasswordChange = {},
+            onLoginClick = {},
+            onBackClick = {},
+            onSignUpClick = {},
+            onForgotPasswordClick = {},
             onGoogleClick = {}
         )
     }
